@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Star Express Logistics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #111827;
+            --brand-red: #cc0000;
+            --brand-red-hover: #990000;
+            --bg: #f8fafc;
+            --text: #334155;
+            --white: #ffffff;
+            --border: #cbd5e1;
+            --muted: #64748b;
+            --success: #16a34a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; }
+        
+        header { background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; border-bottom: 3px solid var(--brand-red); }
+        .logo { color: white; text-decoration: none; font-size: 1.4rem; font-weight: 700; }
+        .logo span { color: var(--brand-red); }
+        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: 600; font-size: 0.95rem; }
+        nav a:hover { color: #ff5555; }
+
+        .container { width: min(1100px, 92%); margin: 40px auto; display: flex; flex-direction: column; gap: 30px; }
+        
+        .card { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06); border-top: 4px solid var(--brand-red); }
+        .card h2 { color: var(--primary); margin-bottom: 8px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .description { color: var(--muted); line-height: 1.6; margin-bottom: 25px; font-size: 0.95rem; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 5px; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
+        
+        input, select, textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 7px; font-size: 15px; outline: none; background: white; color: var(--text); transition: border-color 0.2s; }
+        textarea { min-height: 120px; resize: vertical; }
+        input:focus, select:focus, textarea:focus { border-color: var(--brand-red); box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.1); }
+
+        .btn { border: none; padding: 14px 24px; background: var(--brand-red); color: white; font-size: 15px; font-weight: 700; border-radius: 7px; cursor: pointer; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .btn:hover { background: var(--brand-red-hover); }
+        .btn-secondary { background: var(--primary); }
+        .btn-secondary:hover { background: #1f2937; }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #15803d; }
+
+        /* Active Shipments Table / Cards Section */
+        .shipments-overview-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 15px; }
+        .active-shipment-item { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .shipment-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .badge-code { background: #fee2e2; color: var(--brand-red); padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 12px; }
+        .badge-status { background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+        
+        .progress-indicator { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; color: var(--muted); margin: 5px 0; background: #f1f5f9; padding: 10px; border-radius: 6px; }
+        .shipment-summary { display: flex; align-items: baseline; gap: 8px; margin-top: 16px; color: var(--muted); }
+        .shipment-summary strong { color: var(--brand-red); font-size: 1.8rem; }
+        .shipment-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-danger { background: #7f1d1d; }
+        .btn-danger:hover { background: #991b1b; }
+
+        /* Live Preview Box */
+        .preview-box { background: #f8fafc; border: 1px dashed var(--border); border-radius: 8px; padding: 20px; margin-top: 20px; }
+        .preview-box h4 { color: var(--primary); margin-bottom: 12px; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+        .preview-content { font-size: 0.9rem; color: var(--muted); }
+        .preview-badge { display: inline-block; background: #fee2e2; color: var(--brand-red); padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 12px; margin-bottom: 10px; }
+
+        footer { background: var(--primary); color: white; text-align: center; padding: 25px; margin-top: 50px; border-top: 3px solid var(--brand-red); }
+        
+        @media(max-width: 700px) {
+            header { padding: 1rem 4%; align-items: flex-start; gap: 12px; }
+            nav a { margin-left: 0; font-size: .85rem; }
+            .container { width: 92%; margin: 24px auto; gap: 20px; }
+            .card { padding: 22px 18px; }
+            .form-grid { grid-template-columns: 1fr; gap: 14px; }
+            .progress-indicator { align-items: flex-start; flex-direction: column; }
+            .btn { width: 100%; }
+            .shipment-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">⭐ Star <span>Express Admin</span></a>
+        <nav><a href="/" target="_blank"><i class="fas fa-external-link-alt"></i> View Public Site</a></nav>
+    </header>
+
+    <main class="container">
+        
+        <!-- SECTION 1: CREATE NEW SHIPMENT & SAVE RECORD -->
+        <section class="card">
+            <h2><i class="fas fa-box-open" style="color: var(--brand-red);"></i> 1. Create & Register New Package Order</h2>
+            <p class="description">Fill out package details to generate a tracking code and securely save the order record.</p>
+            
+            <form id="createShipmentForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="newTrackingCode">Auto-Generated Tracking Code</label>
+                        <input type="text" id="newTrackingCode" readonly style="background: #f1f5f9; font-weight: bold;">
+                    </div>
+                    <div class="form-group">
+                        <label for="senderName">Sender Company / Name</label>
+                        <input type="text" id="senderName" value="Star Express Global Hub" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="receiverName">Receiver Full Name</label>
+                        <input type="text" id="receiverName" placeholder="e.g., Jane Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="receiverEmail">Receiver Email Address (For Notifications)</label>
+                        <input type="email" id="receiverEmail" placeholder="jane.doe@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="originLocation">Origin Location</label>
+                        <input type="text" id="originLocation" value="Lagos Central Dispatch, Nigeria" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="destinationLocation">Destination Address</label>
+                        <input type="text" id="destinationLocation" placeholder="e.g., 12 Oxford Street, London, UK" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="margin-top: 25px;"><i class="fas fa-save"></i> Save Order to Records</button>
+            </form>
+            <div id="createResponseMsg" style="margin-top: 15px; font-weight: 600; font-size: 0.95rem;"></div>
+        </section>
+
+        <!-- SECTION 2: VIEW ALL PACKAGES, TRACKING POSITION & EDIT -->
+        <section class="card">
+            <h2><i class="fas fa-map-marked-alt" style="color: var(--brand-red);"></i> 2. Active Shipments, Tracking & Movement Progress</h2>
+            <p class="description">Click the button below to load and inspect all active packages, check their exact moving positions, and edit them instantly.</p>
+            
+            <button type="button" class="btn btn-secondary" id="loadActiveShipmentsBtn">
+                <i class="fas fa-sync-alt"></i> Load / Refresh All Moving Packages
+            </button>
+
+            <div class="shipment-summary" aria-live="polite">
+                <strong id="shipmentCount">0</strong>
+                <span>shipments currently stored</span>
+            </div>
+
+            <div class="shipments-overview-box" id="activeShipmentsContainer" style="display: none;">
+                <!-- Populated dynamically via JavaScript -->
+            </div>
+        </section>
+
+        <!-- SECTION 3: EDIT PACKAGE, CUSTOMIZE MESSAGE & EMAIL USER -->
+        <section class="card" id="editNotificationSection">
+            <h2><i class="fas fa-paper-plane" style="color: var(--brand-red);"></i> 3. Edit Package Status & Email User Notification</h2>
+            <p class="description">Select a package above to edit its position, write a custom message letting the user know their package is on the way, and dispatch an email update.</p>
+            
+            <form id="adminUpdateForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="editTrackingCode">Selected Tracking Number</label>
+                        <input type="text" id="editTrackingCode" readonly style="background: #f1f5f9; font-weight: bold;" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserEmail">User Email Address</label>
+                        <input type="email" id="editUserEmail" readonly style="background: #f1f5f9;" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStatus">Update Package Status</label>
+                        <select id="editStatus" required>
+                            <option value="Order Processed">Order Processed</option>
+                            <option value="In Transit">In Transit (On the Way)</option>
+                            <option value="Arrived at Hub">Arrived at Regional Hub</option>
+                            <option value="Out for Delivery">Out for Delivery</option>
+                            <option value="Customs Clearance">Customs Clearance Hold</option>
+                            <option value="Delivered">Delivered Successfully</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCurrentPosition">Current Position / Location Headline</label>
+                        <input type="text" id="editCurrentPosition" placeholder="e.g., Heathrow Sorting Facility, London" required>
+                    </div>
+                    <div class="form-group full">
+                        <label for="customEmailMessage">Custom Message to User (Email Content)</label>
+                        <textarea id="customEmailMessage" required>Hello, your package is currently on its way and has reached our sorting hub. You can track its progress live using your tracking code.</textarea>
+                        <small style="color: var(--muted);">Write your custom message here. This will be sent directly to the user's email along with their updated tracking position.</small>
+                    </div>
+                </div>
+
+                <!-- Live Tracking Summary Preview -->
+                <div class="preview-box">
+                    <h4><i class="fas fa-eye"></i> Live Email & Tracking Summary Preview</h4>
+                    <div class="preview-content">
+                        <span class="preview-badge" id="prevBadge">In Transit</span>
+                        <p><strong>Tracking Number:</strong> <span id="prevTracking">--</span></p>
+                        <p><strong>Current Position:</strong> <span id="prevPosition">--</span></p>
+                        <p><strong>Custom Note:</strong> <span id="prevMessage">--</span></p>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success" style="margin-top: 25px;"><i class="fas fa-envelope"></i> Save Changes & Send Email to User</button>
+            </form>
+            <div id="updateResponseMsg" style="margin-top: 15px; font-weight: 600; font-size: 0.95rem;"></div>
+        </section>
+
+    </main>
+
+
+    <footer>
+        <p>&copy; 2026 Star Express Logistics. Secure Admin Dashboard.</p>
+    </footer>
+
+   
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        emailjs.init({ publicKey: 't5oS1glghLyDbCZMH' });
+    </script>
+    <script src="/backend/admin.js"></script>
+</body>
+</html>

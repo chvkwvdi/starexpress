@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Star Express</title>
+  <style>
+    :root { --primary: #0f172a; --accent: #2563eb; --bg: #f8fafc; --text: #334155; --white: #ffffff; --border: #cbd5e1; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
+    header { background: var(--primary); color: var(--white); display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .logo { font-size: 1.6rem; font-weight: bold; color: var(--white); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a { color: var(--white); text-decoration: none; margin-left: 2rem; font-weight: 500; }
+    .container { max-width: 800px; margin: 3rem auto; padding: 0 2rem; flex: 1; width: 100%; }
+    .card { background: var(--white); padding: 2.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); }
+    footer { background: var(--primary); color: var(--white); text-align: center; padding: 1.5rem; margin-top: auto; font-size: 0.9rem; }
+    @media (max-width: 600px) { header { align-items: flex-start; gap: 12px; flex-wrap: wrap; } nav { display: flex; gap: 12px; flex-wrap: wrap; } nav a { margin-left: 0; font-size: .9rem; } .container { margin: 2rem auto; padding: 0 1rem; } .card { padding: 1.5rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">Star<span>Express</span></a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h2>Customer Support & Operations Desk</h2>
+      <p style="margin-top: 1rem; line-height: 1.8;">
+        For commercial freight inquiries, priority routing adjustments, or general assistance, contact our central operations team:<br><br>
+        <strong>Email:</strong> support@starexpress-logistics.com<br>
+        <strong>Hotline:</strong> +1 (800) 555-STAR / +1 (800) 555-7827<br>
+        <strong>Headquarters:</strong> 100 Logistics Way, Terminal 4, New York, NY
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Star Express Logistics. All rights reserved.
+  </footer>
+</body>
+</html>

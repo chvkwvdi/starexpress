@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services - Star Express</title>
+  <style>
+    :root { --primary: #111827; --brand-red: #cc0000; --brand-red-hover: #990000; --bg: #f8fafc; --text: #334155; --white: #ffffff; --border: #cbd5e1; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
+    header { background: var(--primary); color: var(--white); display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; border-bottom: 3px solid var(--brand-red); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .logo { font-size: 1.5rem; font-weight: bold; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.4rem; }
+    .logo span { color: var(--brand-red); }
+    nav a { color: var(--white); text-decoration: none; margin-left: 2rem; font-weight: 500; }
+    
+    .container { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; flex: 1; width: 100%; }
+    .card { background: var(--white); padding: 2.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border-top: 4px solid var(--brand-red); }
+    
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem; }
+    .service-item { background: var(--bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .service-item img { width: 100%; height: 180px; object-fit: cover; }
+    .service-content { padding: 1.5rem; }
+    .service-content h3 { margin-bottom: 0.5rem; color: var(--primary); }
+    .service-content p { color: #64748b; font-size: 0.95rem; line-height: 1.5; }
+    
+    footer { background: var(--primary); color: var(--white); text-align: center; padding: 2rem; margin-top: auto; font-size: 0.9rem; border-top: 3px solid var(--brand-red); }
+    @media (max-width: 600px) { header { align-items: flex-start; gap: 12px; flex-wrap: wrap; } nav { display: flex; gap: 12px; flex-wrap: wrap; } nav a { margin-left: 0; font-size: .9rem; } .container { margin: 2rem auto; padding: 0 1rem; } .card { padding: 1.5rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">⭐ Star<span>Express</span></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h2>Our Comprehensive Freight Services</h2>
+      <p style="margin-top: 0.5rem; color: #64748b;">Built for international business compliance, secure handling, and rapid transit.</p>
+      
+      <div class="services-grid">
+        <div class="service-item">
+          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80" alt="Air Courier">
+          <div class="service-content">
+            <h3>Priority Air Cargo</h3>
+            <p>Fast international transport times with guaranteed customs processing support.</p>
+          </div>
+        </div>
+        <div class="service-item">
+          <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=600&q=80" alt="Ocean Shipping">
+          <div class="service-content">
+            <h3>Ocean Freight Solutions</h3>
+            <p>Economical container loads and full cargo forwarding across major global ports.</p>
+          </div>
+        </div>
+        <div class="service-item">
+          <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=600&q=80" alt="Road Freight">
+          <div class="service-content">
+            <h3>Ground Express Courier</h3>
+            <p>Reliable door-to-door small parcel and regional freight distribution.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Star Express Logistics. All rights reserved.
+  </footer>
+</body>
+</html>

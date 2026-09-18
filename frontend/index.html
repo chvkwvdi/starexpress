@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Express Courier Services & Logistics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="/frontend/style.css">
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1586528116493-da8b8f3f5b3f?auto=format&fit=crop&w=2000&q=85">
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=2000&q=85">
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=2000&q=85">
+</head>
+
+<body>
+    <div class="topbar">
+        <div class="container topbar-inner">
+            <div class="topbar-left">
+                <span><i class="fa-solid fa-phone"></i> +1 (413) 372-5012</span>
+                <span><i class="fa-solid fa-envelope"></i> info@starexpresscourierservices.com</span>
+                <span><i class="fa-solid fa-clock"></i> Mon - Sat: 8:00 - 18:00</span>
+            </div>
+            <div class="top-social">
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="container navbar">
+            <a href="#home" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-star"></i></div>
+                <div class="logo-name">STAR EXPRESS<small>COURIER SERVICES & LOGISTICS</small></div>
+            </a>
+
+            <nav class="nav" id="nav">
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#solutions">Solutions</a>
+                <a href="#quote">Get Quote</a>
+                <a href="#about">About Us</a>
+                <a href="#team">Our Team</a>
+                <a href="#contact">Contact</a>
+                <a href="tracking.html" class="track-btn">Track Shipment</a>
+            </nav>
+
+            <div class="language-control" aria-label="Language selector">
+                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                <select id="languageSelect" aria-label="Choose language"></select>
+            </div>
+
+            <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-slides">
+                <div class="hero-slide active" style="background-image:linear-gradient(90deg,rgba(12,20,27,.92),rgba(12,20,27,.65),rgba(12,20,27,.25)),url('https://images.unsplash.com/photo-1586528116493-da8b8f3f5b3f?auto=format&fit=crop&w=2000&q=85')"></div>
+                <div class="hero-slide" style="background-image:linear-gradient(90deg,rgba(12,20,27,.92),rgba(12,20,27,.62),rgba(12,20,27,.2)),url('https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=2000&q=85')"></div>
+                <div class="hero-slide" style="background-image:linear-gradient(90deg,rgba(12,20,27,.92),rgba(12,20,27,.62),rgba(12,20,27,.2)),url('https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=2000&q=85')"></div>
+            </div>
+
+            <div class="container hero-inner">
+                <div class="hero-content">
+                    <small>INTERNATIONAL COURIER & LOGISTICS</small>
+                    <h1>We Move Your <span>World.</span></h1>
+                    <p>Reliable courier, cargo and logistics services designed to move your packages safely and efficiently across borders.</p>
+                    <div class="hero-buttons">
+                        <a href="tracking.html" class="btn btn-red">Track Shipment <i class="fa-solid fa-location-dot"></i></a>
+                        <a href="#contact" class="btn btn-white">Get A Quote <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-controls">
+                <button class="hero-prev" aria-label="Previous slide"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="hero-dots">
+                    <button class="hero-dot active" data-slide="0"></button>
+                    <button class="hero-dot" data-slide="1"></button>
+                    <button class="hero-dot" data-slide="2"></button>
+                </div>
+                <button class="hero-next" aria-label="Next slide"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </section>
+
+        <section class="tracking-area">
+            <div class="container">
+                <div class="tracking-box">
+                    <div>
+                        <h3>Track Your Shipment</h3>
+                        <p>Enter your tracking number to check the status and location of your package.</p>
+                    </div>
+                    <form class="tracking-form" id="trackingForm">
+                        <input type="text" id="trackingCode" placeholder="Enter tracking number" required>
+                        <button class="btn btn-red" type="submit">Track Package <i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="shipping">
+            <div class="container">
+                <div class="shipping-grid">
+                    <div class="shipping-card"><div class="shipping-icon"><i class="fa-solid fa-truck"></i></div><div><h3>BY LAND</h3><p>Reliable road transportation</p></div></div>
+                    <div class="shipping-card"><div class="shipping-icon"><i class="fa-solid fa-ship"></i></div><div><h3>BY SEA</h3><p>International ocean freight</p></div></div>
+                    <div class="shipping-card"><div class="shipping-icon"><i class="fa-solid fa-plane"></i></div><div><h3>BY AIR</h3><p>Fast international delivery</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section services" id="services">
+            <div class="container">
+                <div class="section-heading reveal">
+                    <span>What We Do</span>
+                    <h2>Our Services</h2>
+                    <p>Professional logistics services designed to make your shipping process simple, secure and dependable.</p>
+                </div>
+
+                <div class="service-grid">
+                    <article class="service-card reveal"><div class="service-image"><img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1000&q=85" alt="Warehousing"></div><div class="service-body"><i class="fa-solid fa-warehouse"></i><h3>Warehousing</h3><p>Secure storage and professional handling of your goods and cargo.</p><a href="#contact">Learn more <i class="fa-solid fa-arrow-right"></i></a></div></article>
+                    <article class="service-card reveal"><div class="service-image"><img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=1000&q=85" alt="Cargo Express"></div><div class="service-body"><i class="fa-solid fa-box"></i><h3>Cargo Express</h3><p>Fast and dependable transportation for parcels and commercial cargo.</p><a href="#contact">Learn more <i class="fa-solid fa-arrow-right"></i></a></div></article>
+                    <article class="service-card reveal"><div class="service-image"><img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d8?auto=format&fit=crop&w=1000&q=85" alt="Ocean Freight"></div><div class="service-body"><i class="fa-solid fa-ship"></i><h3>Ocean Freight</h3><p>Cost-effective international shipping for large and commercial cargo.</p><a href="#contact">Learn more <i class="fa-solid fa-arrow-right"></i></a></div></article>
+                    <article class="service-card reveal"><div class="service-image"><img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1000&q=85" alt="Air Freight"></div><div class="service-body"><i class="fa-solid fa-plane"></i><h3>Air Freight</h3><p>Time-sensitive international freight delivered with speed and care.</p><a href="#contact">Learn more <i class="fa-solid fa-arrow-right"></i></a></div></article>
+                    <article class="service-card reveal"><div class="service-image"><img src="https://images.unsplash.com/photo-1494412519320-aa613dfb7738?auto=format&fit=crop&w=1000&q=85" alt="Logistics"></div><div class="service-body"><i class="fa-solid fa-route"></i><h3>Logistics</h3><p>End-to-end logistics coordination for your supply chain.</p><a href="#contact">Learn more <i class="fa-solid fa-arrow-right"></i></a></div></article>
+                    <article class="service-card reveal"><div class="service-image"><img src="https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=1000&q=85" alt="Custom Brokerage"></div><div class="service-body"><i class="fa-solid fa-file-invoice"></i><h3>Custom Brokerage</h3><p>Professional assistance with customs and international shipment processing.</p><a href="#contact">Learn more <i class="fa-solid fa-arrow-right"></i></a></div></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section solutions" id="solutions">
+            <div class="container">
+                <div class="section-heading reveal">
+                    <span>Built Around Your Shipment</span>
+                    <h2>Logistics Solutions That Fit</h2>
+                    <p>From a single parcel to recurring business cargo, our services are structured around speed, visibility and dependable handling.</p>
+                </div>
+
+                <div class="solution-grid">
+                    <div class="solution-image reveal"><img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85" alt="Logistics team planning"></div>
+                    <div class="solution-list">
+                        <div class="solution-item reveal"><span>01</span><div><h3>Business Shipping</h3><p>Recurring shipments, commercial cargo and logistics support for growing businesses.</p></div></div>
+                        <div class="solution-item reveal"><span>02</span><div><h3>Door-to-Door Delivery</h3><p>Pickup, transportation and final delivery coordinated as one service.</p></div></div>
+                        <div class="solution-item reveal"><span>03</span><div><h3>Shipment Visibility</h3><p>Tracking updates help customers know where their shipment is throughout the journey.</p></div></div>
+                        <div class="solution-item reveal"><span>04</span><div><h3>International Freight</h3><p>Air and ocean freight options for international cargo and larger shipments.</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="people-section">
+            <div class="container">
+                <div class="people-heading reveal">
+                    <div><span>THE PEOPLE BEHIND THE DELIVERY</span><h2>Professional People. Reliable Delivery.</h2></div>
+                    <p>From warehouse teams to drivers and delivery professionals, every shipment depends on people who handle it with care.</p>
+                </div>
+
+                <div class="people-grid">
+                    <div class="person-card reveal"><img src="https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=900&q=85" alt="Delivery professional"><div><strong>Delivery Team</strong><span>Last-mile operations</span></div></div>
+                    <div class="person-card reveal"><img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=85" alt="Logistics professional"><div><strong>Operations Team</strong><span>Shipment coordination</span></div></div>
+                    <div class="person-card reveal"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=900&q=85" alt="Customer service professional"><div><strong>Support Team</strong><span>Customer assistance</span></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="process content-section">
+            <div class="container">
+                <div class="section-heading reveal"><span>Simple Process</span><h2>How Your Shipment Moves</h2><p>A clear workflow from the first booking to the final delivery.</p></div>
+                <div class="process-grid">
+                    <div class="process-card reveal"><b>01</b><i class="fa-solid fa-box-open"></i><h3>Book</h3><p>Provide the shipment and destination details.</p></div>
+                    <div class="process-card reveal"><b>02</b><i class="fa-solid fa-truck-fast"></i><h3>Collect</h3><p>Your package is prepared and moved into our delivery network.</p></div>
+                    <div class="process-card reveal"><b>03</b><i class="fa-solid fa-location-crosshairs"></i><h3>Track</h3><p>Follow shipment status and location using your tracking number.</p></div>
+                    <div class="process-card reveal"><b>04</b><i class="fa-solid fa-handshake"></i><h3>Deliver</h3><p>Your shipment reaches its destination safely and efficiently.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quote-tools" id="quote">
+            <div class="container quote-tools-grid">
+                <div class="quote-copy reveal">
+                    <span>PLAN YOUR SHIPMENT</span>
+                    <h2>Get A Quick Shipping Estimate</h2>
+                    <p>Use the simple estimator for an indicative starting price. The final quote can be confirmed by the Star Express team after reviewing your shipment details.</p>
+                    <div class="quote-benefits">
+                        <span><i class="fa-solid fa-circle-check"></i> Simple to use</span>
+                        <span><i class="fa-solid fa-circle-check"></i> Weight-based estimate</span>
+                        <span><i class="fa-solid fa-circle-check"></i> Choose your shipping method</span>
+                    </div>
+                </div>
+                <form class="quote-calculator reveal" id="quoteCalculator">
+                    <div class="quote-field">
+                        <label for="quoteService">Shipping method</label>
+                        <select id="quoteService">
+                            <option value="land">Land Freight</option>
+                            <option value="air">Air Freight</option>
+                            <option value="sea">Ocean Freight</option>
+                        </select>
+                    </div>
+                    <div class="quote-field">
+                        <label for="quoteWeight">Package weight (kg)</label>
+                        <input id="quoteWeight" type="number" min="1" value="5" placeholder="e.g. 5">
+                    </div>
+                    <div class="quote-field">
+                        <label for="quoteDistance">Estimated distance</label>
+                        <select id="quoteDistance">
+                            <option value="local">Local / nearby</option>
+                            <option value="regional">Regional</option>
+                            <option value="international">International</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-red" type="submit">Calculate Estimate <i class="fa-solid fa-calculator"></i></button>
+                    <div class="quote-result" id="quoteResult" aria-live="polite">
+                        <span>Estimated starting price</span>
+                        <strong>$0</strong>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="coverage">
+            <div class="container coverage-inner">
+                <div class="coverage-copy reveal"><span>CONNECTED DELIVERY</span><h2>Moving Cargo Across Borders & Cities</h2><p>Our logistics model combines land, air and sea transportation so shipments can move through the route that best fits their destination, urgency and cargo requirements.</p><div class="coverage-points"><span><i class="fa-solid fa-circle-check"></i> International shipping</span><span><i class="fa-solid fa-circle-check"></i> Cargo handling</span><span><i class="fa-solid fa-circle-check"></i> Shipment tracking</span><span><i class="fa-solid fa-circle-check"></i> Customer support</span></div></div>
+                <div class="coverage-image reveal"><img src="https://images.unsplash.com/photo-1565610222536-ef125c59da2e?auto=format&fit=crop&w=1200&q=85" alt="Global cargo logistics"></div>
+            </div>
+        </section>
+
+        <section class="content-section gallery">
+            <div class="container">
+                <div class="section-heading reveal"><span>Inside The Network</span><h2>Logistics In Motion</h2><p>A closer look at the people, vehicles, cargo and infrastructure behind dependable delivery.</p></div>
+                <div class="gallery-grid">
+                    <div class="gallery-item large reveal"><img src="https://images.unsplash.com/photo-1586528116493-da8b8f3f5b3f?auto=format&fit=crop&w=1200&q=85" alt="Team arranging parcels in a logistics warehouse" loading="eager" decoding="async"></div>
+                    <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=900&q=85" alt="Delivery truck on the road" loading="eager" decoding="async"></div>
+                    <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d8?auto=format&fit=crop&w=900&q=85" alt="Courier loading a delivery vehicle" loading="eager" decoding="async"></div>
+                    <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=900&q=85" alt="Organized parcels ready for delivery" loading="eager" decoding="async"></div>
+                    <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=85" alt="Professional logistics team portrait" loading="eager" decoding="async"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about content-section" id="about">
+            <div class="container about-grid">
+                <div class="about-image reveal"><img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=1200&q=85" alt="Star Express Logistics"><div class="about-number"><strong>10+</strong>Years Experience</div></div>
+                <div class="about-text reveal">
+                    <span>About Star Express</span>
+                    <h2>Your Reliable Logistics Partner</h2>
+                    <p>Star Express Courier Services provides dependable courier, cargo and logistics solutions for customers who need their shipments moved safely and efficiently.</p>
+                    <div class="feature"><i class="fa-solid fa-circle-check"></i><div><h4>Reliable Delivery</h4><p>Professional shipment handling from pickup through final delivery.</p></div></div>
+                    <div class="feature"><i class="fa-solid fa-circle-check"></i><div><h4>Shipment Tracking</h4><p>Keep up with your package using your unique tracking number.</p></div></div>
+                    <div class="feature"><i class="fa-solid fa-circle-check"></i><div><h4>Global Reach</h4><p>Shipping solutions for domestic and international destinations.</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="container stats-grid">
+                <div class="stat"><i class="fa-solid fa-globe"></i><strong class="counter" data-target="85">0</strong><span>Countries Served</span></div>
+                <div class="stat"><i class="fa-solid fa-box"></i><strong class="counter" data-target="12000">0</strong><span>Shipments Delivered</span></div>
+                <div class="stat"><i class="fa-solid fa-users"></i><strong class="counter" data-target="4800">0</strong><span>Customers</span></div>
+                <div class="stat"><i class="fa-solid fa-headset"></i><strong>24/7</strong><span>Customer Support</span></div>
+            </div>
+        </section>
+
+        <section class="testimonial-section content-section">
+            <div class="container">
+                <div class="section-heading reveal"><span>Customer Experience</span><h2>Trusted For The Journey</h2><p>Clear communication and dependable service are at the centre of every shipment.</p></div>
+                <div class="testimonial-wrap">
+                    <button class="testimonial-btn prev" aria-label="Previous testimonial"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="testimonial active"><div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div><p>“The tracking experience makes it much easier to know what is happening with a shipment from pickup to delivery.”</p><div><strong>Business Customer</strong><span>Commercial Shipping</span></div></div>
+                    <div class="testimonial"><div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div><p>“A professional logistics partner should make communication simple. That is exactly what customers expect from modern courier services.”</p><div><strong>Retail Customer</strong><span>International Delivery</span></div></div>
+                    <div class="testimonial"><div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div><p>“From warehouse handling to final delivery, every stage matters. A clear process gives customers confidence.”</p><div><strong>Corporate Client</strong><span>Freight & Logistics</span></div></div>
+                    <button class="testimonial-btn next" aria-label="Next testimonial"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq content-section">
+            <div class="container faq-grid">
+                <div class="faq-copy reveal"><span>NEED TO KNOW</span><h2>Frequently Asked Questions</h2><p>Quick answers to common questions about shipping and tracking.</p><a href="#contact" class="btn btn-red">Talk To Us <i class="fa-solid fa-arrow-right"></i></a></div>
+                <div class="faq-list">
+                    <div class="faq-item reveal"><button>How can I track my shipment? <i class="fa-solid fa-plus"></i></button><div class="faq-answer">Enter your shipment tracking number in the tracking form. The tracking page can display the latest shipment details available in the system.</div></div>
+                    <div class="faq-item reveal"><button>Do you handle international shipments? <i class="fa-solid fa-plus"></i></button><div class="faq-answer">Yes. The service structure includes international air and ocean freight as well as customs and cargo support.</div></div>
+                    <div class="faq-item reveal"><button>Can businesses use your logistics services? <i class="fa-solid fa-plus"></i></button><div class="faq-answer">Yes. Business shipping can include recurring cargo, warehousing, logistics coordination and freight services.</div></div>
+                    <div class="faq-item reveal"><button>How do I request a quote? <i class="fa-solid fa-plus"></i></button><div class="faq-answer">Use the contact section to reach the Star Express team with your shipment requirements and destination.</div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta" id="contact">
+            <div class="container cta-inner">
+                <div><h2>Ready To Ship?</h2><p>Let Star Express help move your shipment safely.</p></div>
+                <a href="mailto:info@starexpresscourierservices.com" class="btn btn-red">Contact Us <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-main">
+            <div class="container footer-grid">
+                <div class="footer-about">
+                    <div class="logo footer-logo"><div class="logo-icon"><i class="fa-solid fa-star"></i></div><div class="logo-name">STAR EXPRESS<small>COURIER SERVICES & LOGISTICS</small></div></div>
+                    <p>Professional courier and logistics services for local and international shipments.</p>
+                </div>
+                <div class="footer-column"><h4>Quick Links</h4><ul><li><a href="#home">Home</a></li><li><a href="#services">Services</a></li><li><a href="#about">About Us</a></li><li><a href="tracking.html">Track Shipment</a></li><li><a href="/admin">Admin Portal</a></li></ul></div>
+                <div class="footer-column"><h4>Services</h4><ul><li>Air Freight</li><li>Ocean Freight</li><li>Cargo Express</li><li>Warehousing</li><li>Logistics</li></ul></div>
+                <div class="footer-column"><h4>Contact</h4><div class="footer-contact"><i class="fa-solid fa-location-dot"></i><span>Springfield, Massachusetts, United States</span></div><div class="footer-contact"><i class="fa-solid fa-phone"></i><span>+1 (413) 372-5012</span></div><div class="footer-contact"><i class="fa-solid fa-envelope"></i><span>info@starexpresscourierservices.com</span></div></div>
+            </div>
+        </div>
+        <div class="footer-bottom"><div class="container">© 2026 Star Express Courier Services. All Rights Reserved.</div></div>
+    </footer>
+
+    <div class="mobile-actions">
+        <a href="tracking.html"><i class="fa-solid fa-location-dot"></i><span>Track</span></a>
+        <a href="#quote"><i class="fa-solid fa-calculator"></i><span>Quote</span></a>
+        <a href="tel:+14133725012"><i class="fa-solid fa-phone"></i><span>Call</span></a>
+    </div>
+
+    <button class="back-top" id="backTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+    <script src="/frontend/language.js"></script>
+    <script src="/frontend/main.js"></script>
+</body>
+</html>
