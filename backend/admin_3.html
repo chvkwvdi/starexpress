@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="shortcut icon" href="/assets/star-express-logo.png" type="image/x-icon">
+    <title>Admin Login - Star Express</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-card { background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { margin-bottom: 20px; color: #333; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        button { width: 100%; padding: 10px; background-color: #e63946; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        button:hover { background-color: #d62828; }
+        #errorMsg { margin-top: 15px; color: #d62828; text-align: center; font-size: 14px; word-break: break-all; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>Wants To Join premium? Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required placeholder="users@starexpress.com">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter password">
+            </div>
+            <button type="submit">Log In</button>
+            <div id="errorMsg"></div>
+        </form>
+    </div>
+
+    <script>
+        // Automatically route to port 3000 whether opened normally or via Live Server
+        const isExternalPort = window.location.port && window.location.port !== '3000';
+        const BASE_API_URL = isExternalPort ? `http://${window.location.hostname || 'localhost'}:3000` : '';
+        
+        const LOGIN_URL = `${BASE_API_URL}/api/admin-login`;
+        const DASHBOARD_URL = `${BASE_API_URL}/admin.html`;
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+
+            errorMsg.style.color = '#666';
+            errorMsg.textContent = 'Verifying credentials...';
+
+            try {
+                const response = await fetch(LOGIN_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+
+                const textResponse = await response.text();
+                let result;
+                try {
+                    result = JSON.parse(textResponse);
+                } catch (parseErr) {
+                    throw new Error(`Server returned non-JSON (${response.status}): ${textResponse.substring(0, 60)}`);
+                }
+
+                if (response.ok && result.success) {
+                    errorMsg.style.color = 'green';
+                    errorMsg.textContent = 'Success! Redirecting to Admin Dashboard...';
+                    window.location.href = DASHBOARD_URL;
+                } else {
+                    errorMsg.style.color = '#d62828';
+                    errorMsg.textContent = result.message || 'Access Denied: Incorrect email or password.';
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                errorMsg.style.color = '#d62828';
+                errorMsg.textContent = err.message || 'Server connection error. Make sure node server.js is running.';
+            }
+        });
+    </script>
+</body>
+</html>

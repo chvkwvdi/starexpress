@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - Logistics & Transport</title>
+    <title>About Us - Logistics & Transport</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" href="/assets/star-express-logo.png" type="image/x-icon">
-
+     <link rel="shortcut icon" href="/assets/star-express-logo.png" type="image/x-icon">
     <style>
         /* --- EXACT GLOBAL & CSS RULES PROVIDED --- */
         *{margin:0;padding:0;box-sizing:border-box}
@@ -17,7 +16,7 @@
         body{font-family:"Manrope",sans-serif;color:#222;background:#fff;overflow-x:hidden}
         img{width:100%;max-width:100%;display:block;height:auto}
         a{text-decoration:none;color:inherit}
-        button,input,select,textarea{font-family:inherit}
+        button,input,select{font-family:inherit}
         .container{width:min(1180px,92%);margin:auto}
 
         /* --- Topbar --- */
@@ -48,7 +47,7 @@
         .language-control select:focus{border-color:#e32626;box-shadow:0 0 0 3px rgba(227,38,38,.12)}
 
         /* --- Page Hero Banner --- */
-        .page-hero{background:linear-gradient(rgba(19,29,38,.88),rgba(19,29,38,.88)),url("https://images.unsplash.com/photo-1423784346385-c1d4dac9093a?auto=format&fit=crop&w=2000&q=85") center/cover;color:#fff;padding:80px 0;text-align:center}
+        .page-hero{background:linear-gradient(rgba(19,29,38,.88),rgba(19,29,38,.88)),url("https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=2000&q=85") center/cover;color:#fff;padding:80px 0;text-align:center}
         .page-hero h1{font-size:clamp(32px, 5vw, 50px);margin-bottom:12px}
         .page-hero p{color:#cbd5e1;font-size:15px;max-width:600px;margin:auto}
 
@@ -59,25 +58,88 @@
         .section-heading h2{font-size:clamp(28px, 4vw, 40px);margin:10px 0 13px;line-height:1.2}
         .section-heading p{max-width:650px;margin:auto;color:#777;line-height:1.8;font-size:14px}
 
-        /* --- Contact Section Layout --- */
-        .contact-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:50px;align-items:start}
-        .contact-info-box{background:#f8f9fa;padding:45px 35px;border-top:4px solid #e32626}
-        .contact-info-box h3{font-size:24px;margin-bottom:20px}
-        .contact-info-box p{color:#666;font-size:14px;line-height:1.8;margin-bottom:30px}
-        .info-row{display:flex;gap:18px;margin-bottom:25px}
-        .info-row i{width:45px;height:45px;background:#e32626;color:#fff;display:grid;place-items:center;border-radius:3px;flex-shrink:0;font-size:16px}
-        .info-row h5{font-size:12px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-bottom:4px}
-        .info-row p{font-size:15px;font-weight:700;color:#222;margin:0}
+        /* --- About Grid Section --- */
+        .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:65px;align-items:center}
+        .about-image{position:relative;width:100%}
+        .about-image img{height:500px;width:100%;object-fit:cover}
+        .about-number{position:absolute;right:-20px;bottom:25px;background:#e32626;color:#fff;padding:23px;text-align:center}
+        .about-number strong{display:block;font-size:37px;line-height:1}
+        .about-text>span{color:#e32626;font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+        .about-text h2{font-size:clamp(28px, 4vw, 40px);line-height:1.15;margin:12px 0 18px}
+        .about-text>p{color:#777;line-height:1.9;font-size:14px;margin-bottom:25px}
+        .feature{display:flex;gap:13px;margin-bottom:18px}
+        .feature i{color:#e32626;margin-top:3px;flex-shrink:0}
+        .feature h4{margin-bottom:5px;font-size:16px}
+        .feature p{color:#777;font-size:13px;line-height:1.6}
 
-        .contact-form-box{background:#fff;padding:45px 40px;box-shadow:0 10px 30px rgba(0,0,0,.05);border:1px solid #eee ; border-top: 4px solid red;}
-        .form-group{margin-bottom:20px}
-        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-        .form-group label{display:block;font-size:13px;font-weight:700;margin-bottom:8px;color:#333}
-        .form-control{width:100%;padding:14px 16px;border:1px solid #dcdcdc;border-radius:3px;font-size:14px;outline:none;transition:border-color .2s}
-        .form-control:focus{border-color:#e32626}
-        textarea.form-control{height:140px;resize:vertical}
-        .submit-btn{background:#e32626;color:#fff;border:0;padding:16px 30px;font-weight:700;font-size:14px; margin-top: 2rem;border-radius:3px;cursor:pointer;width:100%;transition:background .2s}
-        .submit-btn:hover{background:#c81e1e}
+        /* --- New Extended Informational Sections Styling --- */
+        .extended-info-section {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .extended-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            color: #475569;
+            font-size: 15px;
+            line-height: 1.9;
+        }
+        .extended-content-wrapper p {
+            margin-bottom: 15px;
+        }
+        
+        .core-pillars-section {
+            background: #fff;
+        }
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .pillar-card {
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            padding: 35px 25px;
+            border-radius: 6px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .pillar-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .pillar-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(227,38,38,0.1);
+            color: #e32626;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .pillar-card h3 {
+            font-size: 18px;
+            color: #111;
+            margin-bottom: 12px;
+        }
+        .pillar-card p {
+            color: #666;
+            font-size: 13.5px;
+            line-height: 1.7;
+        }
+
+        /* --- Stats Bar --- */
+        .stats{background:#171f27;color:#fff;padding:55px 0}
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+        .stat{text-align:center;border-right:1px solid rgba(255,255,255,.12);padding:0 15px}
+        .stat:last-child{border:0}
+        .stat i{color:#e32626;font-size:23px;margin-bottom:10px}
+        .stat strong{display:block;font-size:35px;margin-bottom:5px}
+        .stat span{color:#aeb5bb;font-size:12px}
 
         /* --- Footer Styles --- */
         footer{background:#111820;color:#fff}
@@ -110,29 +172,22 @@
 
         /* Responsive Breakpoints */
         @media(max-width: 1024px){
-            .footer-grid{grid-template-columns:1fr  ;}
-            .contact-grid{grid-template-columns:1fr;gap:40px}
+            .footer-grid{grid-template-columns:1fr ;}
+            .about-grid{grid-template-columns:1fr;gap:40px}
+            .about-image img{height:400px}
+            .about-number{right:15px}
+            .pillars-grid{grid-template-columns:1fr;gap:20px}
         }
         @media(max-width: 900px){
-                      .navbar {
+            .navbar {
     min-height: 82px;
     display: flex;
     align-items: center;
     gap: 10px;
-      min-height: 65px;
-}
-.logo-icon {
-    width: 35px;
-    height: 35px;
-    background: #e32626;
-    color: #fff;
-    display: grid;
-    place-items: center;
-    font-size: 15px;
-    border-radius: 3px;
-    flex-shrink: 0;
-}
-.logo-name{
+    min-height: 65px;
+   
+
+}.logo-name{
     font-size: 14px;
     font-weight: 800;
 }
@@ -146,15 +201,14 @@
             .nav a{padding:12px 0;border-bottom:1px solid #f2f2f2}
             .mobile-menu{display:block}
             .track-btn{text-align:center;display:block;margin-top:5px}
-            .form-row{grid-template-columns:1fr}
+            .stats-grid{grid-template-columns:1fr 1fr;gap:25px}
+            .stat{border:0}
         }
-        @media(max-width: 550px){
-            .wa-support-widget{bottom:20px;right:15px}
-            .wa-support-btn{padding:8px}
-            .wa-text-content{display:none}
-            .back-top{right:15px;bottom:6.5rem}
-            .contact-form-box, .contact-info-box{padding:30px 20px}
-                      .navbar {
+
+
+
+  @media(max-width: 550px){
+            .navbar {
     min-height: 82px;
     display: flex;
     align-items: center;
@@ -180,12 +234,16 @@
     font-size: 6px;
     font-weight: 400;
 }
+            .wa-support-widget{bottom:20px;right:15px}
+            .wa-support-btn{padding:8px}
+            .wa-text-content{display:none}
+            .back-top{right:15px;bottom:6.5rem}
+            .about-image img{height:250px}
         }
     </style>
 </head>
 <body>
-
-  <div class="topbar">
+ <div class="topbar">
         <div class="container topbar-inner">
             <div class="topbar-left">
                 <a href="tel:+447393389724"><span><i class="fa-solid fa-phone"></i> +44 (0) 7393-3897-24</span></a>
@@ -203,7 +261,7 @@
 
     <header>
         <div class="container navbar">
-            <a href="index.html" class="logo">
+            <a href="/frontend/index.html" class="logo">
                 <div class="logo-icon"><i class="fa-solid fa-star"></i></div>
                 <div class="logo-name">STAR EXPRESS<small>COURIER SERVICES & LOGISTICS</small></div>
             </a>
@@ -211,7 +269,7 @@
             <nav class="nav" id="nav">
                 <a href="/frontend/index.html">Home</a>
                 <a href="/frontend/services.html">Services</a>
-                <a href="/frontend/solution.html">Solutions</a>
+                <a href="./solution.html">Solutions</a>
                 <a href="/frontend/about.html">About Us</a>
                 <a href="/frontend/team.html">Our Team</a>
                 <a href="/frontend/contact.html">Contact</a>
@@ -229,107 +287,125 @@
         </div>
     </header>
 
-
     <!-- Page Hero -->
-    <section class="page-hero" style="background-image: url('https://zeew.eu/wp-content/uploads/2025/04/ChatGPT-Image-Apr-22-2025-05_46_52-PM.png');">
+    <section class="page-hero">
         <div class="container">
-            <h1>Get In Touch With Us</h1>
-            <p>Our customer care and freight support desk is available around the clock to help.</p>
+            <h1>About Our Company</h1>
+            <p>Driven by integrity, precision logistics engineering, and worldwide connectivity.</p>
         </div>
     </section>
 
-    <!-- Contact Content Section -->
+    <!-- About Content Section -->
     <section class="content-section">
         <div class="container">
-            <div class="section-heading">
-                <span>Connect Directly</span>
-                <h2>We're Here to Answer Your Questions</h2>
-                <p>Reach out to our global dispatch offices or send us a quick message using the form below.</p>
-            </div>
-
-            <div class="contact-grid">
-                <!-- Contact Information Box -->
-                <div class="contact-info-box">
-                    <h3>Office Headquarters</h3>
-                    <p>Have questions about your cargo transit, shipping rates, or warehouse capabilities? Get in touch with our team.</p>
-                    
-                    <div class="info-row">
-                        <i class="fa-solid fa-location-dot"></i>
-                        <div>
-                            <h5>Address</h5>
-                            <p>Springfield, Massachusetts, United States</p>
-                        </div>
-                    </div>
-
-                    <div class="info-row">
-                        <i class="fa-solid fa-phone"></i>
-                        <div>
-                            <h5>Phone Support</h5>
-                            <p>+44 (0) 7393-3897-24</p>
-                        </div>
-                    </div>
-
-                      <div class="info-row">
-                        <i class="fa-solid fa-phone"></i>
-                        <div>
-                            <h5>Whatsapp Support</h5>
-                            <p>+63 (912) 8616-072 </p>
-                        </div>
-                    </div>
-
-                    <div class="info-row">
-                        <i class="fa-solid fa-envelope"></i>
-                        <div>
-                            <h5>Email Address</h5>
-                            <p>expressstar846@gmail.com</p>
-                        </div>
-                    </div>
-
-                    <div class="info-row">
-                        <i class="fa-solid fa-clock"></i>
-                        <div>
-                            <h5>Working Hours</h5>
-                            <p>Mon - Sat: 7:30 AM - 6:30 PM</p>
-                        </div>
+            <div class="about-grid">
+                <div class="about-image">
+                    <img src="https://dam.oneadvanced.com/m/267b9e0163c71c30/original/choosing-the-right-supplier.jpg" alt="About TransGo Logistics">
+                    <div class="about-number">
+                        <strong>12+</strong>
+                        <span>Years Experience</span>
                     </div>
                 </div>
-
-                <!-- Contact Form Box -->
-                <div class="contact-form-box">
-                    <form id="contactForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="name">Your Name</label>
-                                <input type="text" id="name" class="form-control" placeholder="John Doe" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Your Email</label>
-                                <input type="email" id="email" class="form-control" placeholder="john@example.com" required>
-                            </div>
+                <div class="about-text">
+                    <span>Who We Are</span>
+                    <h2>Providing Dedicated Logistics & Transport Excellence</h2>
+                    <p>TransGo Logistics has built a reputation on high-reliability shipping solutions, safe freight transit, and cutting-edge digital tracking integration tailored for modern commercial supply chains.</p>
+                    
+                    <div class="feature">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div>
+                            <h4>Global Network Reach</h4>
+                            <p>Connecting international hubs across continents with streamlined air, land, and ocean freight channels.</p>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="phone">Phone Number</label>
-                                <input type="tel" id="phone" class="form-control" placeholder="+1 (555) 000-0000">
-                            </div>
-                            <div class="form-group">
-                                <label for="subject">Subject</label>
-                                <input type="text" id="subject" class="form-control" placeholder="Shipping Inquiry">
-                            </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div>
+                            <h4>Real-Time Consignment Tracking</h4>
+                            <p>Complete status visibility and transparent tracking updates from dispatch to final doorstep confirmation.</p>
                         </div>
-
-                        <div class="form-group">
-                            <label for="message">Your Message</label>
-                            <textarea id="message" class="form-control" placeholder="Write your inquiry or message here..." required></textarea>
-                        </div>
-
-                        <button type="submit" class="submit-btn">Send Message</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Added Section 1: Detailed Company Story & Big Informational Text -->
+    <section class="content-section extended-info-section">
+        <div class="container">
+            <div class="section-heading">
+                <span>Comprehensive Overview</span>
+                <h2>Engineering the Future of Global Supply Chains</h2>
+                <p>Discover how our unwavering commitment to logistical innovation transforms the way businesses move freight across international borders.</p>
+            </div>
+            <div class="extended-content-wrapper">
+                <p>Founded on principles of absolute transparency, operational excellence, and unmatched speed, Star Express Logistics has grown from a regional courier service into a premier international transport powerhouse. In today's hyper-connected global marketplace, supply chain efficiency can make or break an enterprise. Recognizing this critical demand, we have continuously refined our shipping methods, integrated state-of-the-art tracking technologies, and fostered deep partnerships across major global transport hubs.</p>
+                <p>Our comprehensive logistics solutions span across multi-modal networks, seamlessly bridging air, ocean, and ground freight operations. Whether you are shipping high-value commercial cargo across continents or managing time-sensitive domestic package deliveries, our specialized logistics engineering team designs custom workflows tailored precisely to your operational metrics. We understand that every minute counts in international trade; therefore, our dedicated routing specialists constantly optimize transit paths to mitigate delays, reduce overhead costs, and ensure absolute cargo security from dispatch point to final destination.</p>
+                <p>Beyond traditional freight management, we pride ourselves on being a forward-thinking digital logistics provider. Our proprietary tracking infrastructure grants clients real-time visibility, offering granular data points regarding shipment statuses, environmental conditions during transit, and estimated delivery windows. This level of granular insight empowers businesses to manage their inventory proactively, foster deeper trust with their end customers, and scale their global operations with total peace of mind.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Added Section 2: Core Values & Nice Page-Fitting Presentation -->
+    <section class="content-section core-pillars-section">
+        <div class="container">
+            <div class="section-heading">
+                <span>Our Core Pillars</span>
+                <h2>What Sets Star Express Apart</h2>
+                <p>Built on a foundation of customer-centric values, advanced technology, and professional dedication.</p>
+            </div>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3>Uncompromising Security</h3>
+                    <p>We treat every cargo consignment with the highest tier of security protocols, utilizing monitored storage facilities and tamper-proof tracking seals throughout transit.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3>Agile & Rapid Transit</h3>
+                    <p>Time is a valuable commodity in modern business. Our streamlined dispatch pipelines and express routes ensure your freight arrives ahead of schedule.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h3>24/7 Dedicated Support</h3>
+                    <p>Our multilingual customer care and logistics experts are always available around the clock via Emails, phone, and WhatsApp to assist with your needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats">
+        <div class="container stats-grid">
+            <div class="stat">
+                <i class="fa-solid fa-box-archive"></i>
+                <strong>150K+</strong>
+                <span>Delivered Parcels</span>
+            </div>
+            <div class="stat">
+                <i class="fa-solid fa-earth-americas"></i>
+                <strong>85+</strong>
+                <span>Countries Covered</span>
+            </div>
+            <div class="stat">
+                <i class="fa-solid fa-face-smile"></i>
+                <strong>99.8%</strong>
+                <span>Satisfied Clients</span>
+            </div>
+            <div class="stat">
+                <i class="fa-solid fa-award"></i>
+                <strong>18</strong>
+                <span>Industry Awards</span>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -337,11 +413,10 @@
             <div class="footer-grid">
                 <div class="footer-about">
                     <div class="logo footer-logo">
-                        <div class="logo-icon"><i class="fa-solid fa-star"></i></div>
-                        <div class="logo-name" style="color:#fff">STAR EXPRESS
-<small>LOGISTICS & TRANSPORT</small></div>
+                     <div class="logo-icon"><i class="fa-solid fa-star"></i></div>
+                <div class="logo-name" style="color: white;">STAR EXPRESS<small>COURIER SERVICES & LOGISTICS</small></div>
                     </div>
-                    <p>Professional worldwide logistics services built on speed, precision security, and reliability.</p>
+                    <p> Professional worldwide logistics services built on speed, precision security, and reliability.</p>
                 </div>
                 <div class="footer-column">
                     <h4>Quick Links</h4>
@@ -363,7 +438,7 @@
                         <li><a href="services.html">Warehousing</a></li>
                     </ul>
                 </div>
-               <div class="footer-column">
+                <div class="footer-column">
                     <h4>Contact Us</h4>
                     <div class="footer-contact"><i class="fa-solid fa-location-dot"></i> Springfield, Massachusetts, United States</div>
                     <div class="footer-contact"><a href="https://wa.me/639128616072" target="_blank"><span style="display: flex; gap: 8px;"><i style="margin-top: 6px;"  class="fa-brands fa-whatsapp"></i> +63 (912) 8616-072</span></a></div>
@@ -373,7 +448,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <div class="container">&copy; 2026 TransGo Logistics. All Rights Reserved.</div>
+            <div class="container">&copy; 2026 Star Express Logistics. All Rights Reserved.</div>
         </div>
     </footer>
 
@@ -381,7 +456,7 @@
     <button class="back-top" id="backTopBtn"><i class="fa-solid fa-arrow-up"></i></button>
 
     <div class="wa-support-widget">
-        <a href="https://wa.me/18004567890" target="_blank" class="wa-support-btn">
+        <a  href="https://wa.me/+639128616072?text=Hello%20Star%20Express,%20I%20need%20help%20with%20my%20shipment."  target="_blank" class="wa-support-btn">
             <div class="wa-icon-box">
                 <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm0 1.83c2.19 0 4.25.85 5.8 2.4 1.55 1.55 2.4 3.61 2.4 5.8 0 4.53-3.69 8.22-8.22 8.22-1.46 0-2.89-.38-4.14-1.11l-.3-.18-3.08.81.82-3-.19-.31a8.14 8.14 0 01-1.25-4.33c0-4.53 3.69-8.22 8.22-8.22zm-4.41 3.99c-.19 0-.49.07-.74.35-.25.28-.96.94-.96 2.29s.99 2.65 1.13 2.83c.14.18 1.93 2.95 4.69 4.14.65.28 1.16.45 1.56.58.66.21 1.26.18 1.73.11.53-.08 1.63-.67 1.86-1.31.23-.64.23-1.19.16-1.31-.07-.12-.25-.19-.52-.33s-1.63-.8-1.88-.89c-.25-.09-.43-.13-.61.13-.18.26-.7.89-.86 1.07-.16.18-.32.2-.59.07-.27-.13-1.14-.42-2.17-1.34-.8-.71-1.34-1.59-1.5-1.86-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.33-.02-.47-.07-.14-.61-1.48-.84-2.03-.22-.53-.45-.46-.62-.47h-.53z"/></svg>
                 <div class="wa-pulse-ring"></div>
@@ -392,8 +467,8 @@
             </div>
         </a>
     </div>
-<script src="./language.js"></script>
-    <!-- JavaScript for Mobile Menu, Back to Top & Contact Form -->
+   <script src="/frontend/language.js"></script>
+    <!-- JavaScript for Mobile Menu & Back to Top -->
     <script>
         const menuToggle = document.getElementById('mobileMenu');
         const navMenu = document.getElementById('nav');
@@ -403,7 +478,7 @@
 
         const backTopBtn = document.getElementById('backTopBtn');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
+            if (window.scrollY > 150) {
                 backTopBtn.classList.add('show');
             } else {
                 backTopBtn.classList.remove('show');
@@ -411,14 +486,6 @@
         });
         backTopBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        const contactForm = document.getElementById('contactForm');
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Thank you! Your message has been sent successfully. We will get back to you shortly.');
-            window.location = `https://wa.me/639128616072`;
-            contactForm.reset();
         });
     </script>
 </body>

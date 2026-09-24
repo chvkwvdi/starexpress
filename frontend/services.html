@@ -1,75 +1,558 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Services - Star Express</title>
-  <style>
-    :root { --primary: #111827; --brand-red: #cc0000; --brand-red-hover: #990000; --bg: #f8fafc; --text: #334155; --white: #ffffff; --border: #cbd5e1; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
-    header { background: var(--primary); color: var(--white); display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; border-bottom: 3px solid var(--brand-red); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .logo { font-size: 1.5rem; font-weight: bold; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.4rem; }
-    .logo span { color: var(--brand-red); }
-    nav a { color: var(--white); text-decoration: none; margin-left: 2rem; font-weight: 500; }
-    
-    .container { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; flex: 1; width: 100%; }
-    .card { background: var(--white); padding: 2.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border-top: 4px solid var(--brand-red); }
-    
-    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem; }
-    .service-item { background: var(--bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
-    .service-item img { width: 100%; height: 180px; object-fit: cover; }
-    .service-content { padding: 1.5rem; }
-    .service-content h3 { margin-bottom: 0.5rem; color: var(--primary); }
-    .service-content p { color: #64748b; font-size: 0.95rem; line-height: 1.5; }
-    
-    footer { background: var(--primary); color: var(--white); text-align: center; padding: 2rem; margin-top: auto; font-size: 0.9rem; border-top: 3px solid var(--brand-red); }
-    @media (max-width: 600px) { header { align-items: flex-start; gap: 12px; flex-wrap: wrap; } nav { display: flex; gap: 12px; flex-wrap: wrap; } nav a { margin-left: 0; font-size: .9rem; } .container { margin: 2rem auto; padding: 0 1rem; } .card { padding: 1.5rem; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services - Logistics & Transport</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+     <link rel="shortcut icon" href="/assets/star-express-logo.png" type="image/x-icon">
+    <style>
+        /* --- EXACT GLOBAL & CSS RULES PROVIDED --- */
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:"Manrope",sans-serif;color:#222;background:#fff;overflow-x:hidden}
+        img{width:100%;max-width:100%;display:block;height:auto}
+        a{text-decoration:none;color:inherit}
+        button,input,select{font-family:inherit}
+        .container{width:min(1180px,92%);margin:auto}
+
+        /* --- Topbar --- */
+        .topbar{background:#151515;color:#fff;font-size:13px}
+        .topbar-inner{min-height:40px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+        .topbar-left{display:flex;gap:25px;flex-wrap:wrap}
+        .topbar span{display:flex;align-items:center;gap:8px}
+        .topbar i{color:#e32626}
+        .top-social{display:flex;gap:14px}
+
+        /* --- Header & Navigation --- */
+        header{background:#fff;position:sticky;top:0;z-index:1000;box-shadow:0 2px 15px rgba(0,0,0,.06)}
+        .navbar{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:60px}
+        .logo{display:flex;align-items:center;gap:8px;min-width:0;flex-shrink:1}
+        .logo-icon{width:40px;height:40px;background:#e32626;color:#fff;display:grid;place-items:center;font-size:18px;border-radius:3px;flex-shrink:0}
+        .logo-name{font-size:18px;font-weight:800;color:#171717;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .logo-name small{display:block;color:#e32626;font-size:8px;letter-spacing:1px;margin-top:2px}
+
+        .nav{display:flex;align-items:center;gap:25px}
+        .nav a{font-size:13px;font-weight:700;color:#333;transition:color 0.2s}
+        .nav a:hover, .nav a.active{color:#e32626}
+        .track-btn{background:#e32626;color:#fff!important;padding:13px 19px;border-radius:3px;white-space:nowrap}
+        .mobile-menu{display:none;border:0;background:transparent;font-size:22px;cursor:pointer;color:#222;padding:4px;flex-shrink:0}
+
+        .language-control{display:flex;align-items:center;gap:4px;flex:0 0 auto;margin-left:auto;margin-right:8px}
+        .language-control>i{color:#e32626;font-size:12px}
+        .language-control select{width:92px;height:26px;border:1px solid #d5dce0;border-radius:4px;background:#fff;color:#333;padding:0 4px;font:600 10px "Manrope",sans-serif;cursor:pointer;outline:none}
+        .language-control select:focus{border-color:#e32626;box-shadow:0 0 0 3px rgba(227,38,38,.12)}
+
+        /* --- Page Hero Banner --- */
+        .page-hero{background:linear-gradient(rgba(19,29,38,.88),rgba(19,29,38,.88)),url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=2000&q=85") center/cover;color:#fff;padding:80px 0;text-align:center}
+        .page-hero h1{font-size:clamp(32px, 5vw, 50px);margin-bottom:12px}
+        .page-hero p{color:#cbd5e1;font-size:15px;max-width:600px;margin:auto}
+
+        /* --- Content Sections & Headings --- */
+        .content-section{padding:90px 0}
+        .section-heading{text-align:center;margin-bottom:50px}
+        .section-heading span{color:#e32626;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px}
+        .section-heading h2{font-size:clamp(28px, 4vw, 40px);margin:10px 0 13px;line-height:1.2}
+        .section-heading p{max-width:650px;margin:auto;color:#777;line-height:1.8;font-size:14px}
+
+        /* --- Services Grid & Expandable Cards --- */
+        .services{background:#f7f7f7}
+        .service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:23px}
+        .service-card{background:#fff;border:1px solid #e7e7e7;transition:transform .3s, box-shadow .3s;overflow:hidden;display:flex;flex-direction:column}
+        .service-card:hover{transform:translateY(-6px);box-shadow:0 15px 30px rgba(0,0,0,.08)}
+        .service-image{height:205px;overflow:hidden;width:100%}
+        .service-image img{height:100%;width:100%;object-fit:cover;transition:.5s}
+        .service-card:hover img{transform:scale(1.06)}
+        .service-body{padding:24px;display:flex;flex-direction:column;flex-grow:1}
+        .service-body>i{color:#e32626;font-size:23px;margin-bottom:14px}
+        .service-body h3{margin-bottom:10px;font-size:19px}
+        .service-body p{color:#777;font-size:13px;line-height:1.8;margin-bottom:14px;flex-grow:1}
+        
+        /* Expandable Extended Info Section */
+        .service-details-extended {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            border-top: 1px solid transparent;
+            margin-top: 0;
+        }
+        .service-card.expanded .service-details-extended {
+            max-height: 500px;
+            opacity: 1;
+            border-top: 1px solid #eee;
+            margin-top: 14px;
+            padding-top: 14px;
+        }
+        .service-details-extended h4 {
+            font-size: 13px;
+            color: #111;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .service-features-list {
+            list-style: none;
+            margin-bottom: 14px;
+        }
+        .service-features-list li {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .service-features-list li i {
+            color: #e32626;
+            font-size: 10px;
+        }
+        .extended-desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        /* Read More Trigger Button Style */
+        .read-more-btn {
+            background: none;
+            border: none;
+            color: #e32626;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: auto;
+            cursor: pointer;
+            padding: 0;
+            text-align: left;
+        }
+        .read-more-btn i {
+            font-size: 10px;
+            transition: transform 0.3s;
+        }
+        .service-card.expanded .read-more-btn i {
+            transform: rotate(90deg);
+        }
+
+        /* --- Footer Styles --- */
+        footer{background:#111820;color:#fff}
+        .footer-main{padding:65px 0 45px}
+        .footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:40px}
+        .footer-logo{margin-bottom:18px}
+        .footer-about p,.footer-column li{color:#929da6;font-size:13px;line-height:1.8}
+        .footer-column h4{margin-bottom:18px;font-size:16px}
+        .footer-column ul{list-style:none}
+        .footer-column li{margin-bottom:9px}
+        .footer-column a:hover{color:#fff}
+        .footer-contact{display:flex;gap:10px;margin-bottom:15px;color:#929da6;font-size:13px;line-height:1.6}
+        .footer-contact a{display:flex;gap:6px;margin-top:10px}
+        .footer-contact i{color:#e32626}
+        .footer-bottom{border-top:1px solid #27323b;padding:19px 0;color:#7d8992;font-size:12px;text-align:center}
+
+        /* --- Back To Top & WhatsApp Widget --- */
+        .back-top{position:fixed;right:22px;bottom:22px;width:45px;height:45px;border:0;background:#e32626;color:#fff;border-radius:3px;z-index:900;cursor:pointer;opacity:0;pointer-events:none;transition:.3s;display:grid;place-items:center}
+        .back-top.show{opacity:1;pointer-events:auto}
+
+        .wa-support-widget{position:fixed;bottom:80px;right:30px;z-index:9999}
+        .wa-support-btn{display:flex;align-items:center;gap:12px;background:rgba(255, 255, 255, 0.1);backdrop-filter:blur(12px);border:1px solid rgba(255, 255, 255, 0.2);padding:10px 18px 10px 10px;border-radius:50px;text-decoration:none;color:#000;box-shadow:0 15px 35px rgba(0,0,0,0.2)}
+        .wa-icon-box{position:relative;width:44px;height:44px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(37,211,102,0.4);flex-shrink:0}
+        .wa-icon-box svg{width:24px;height:24px;fill:#fff}
+        .wa-pulse-ring{position:absolute;top:-2px;right:-2px;width:12px;height:12px;background:#00ff88;border:2px solid #fff;border-radius:50%;animation:pulseStatus 2s infinite}
+        @keyframes pulseStatus{0%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(0,255,136,0.7)}70%{transform:scale(1);box-shadow:0 0 0 8px rgba(0,255,136,0)}100%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(0,255,136,0)}}
+        .wa-text-content{display:flex;flex-direction:column;text-align:left}
+        .wa-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.9);font-weight:600}
+        .wa-action{font-size:14px;font-weight:700;color:#fff}
+
+        /* Responsive Breakpoints */
+        @media(max-width: 1024px){.footer-grid{grid-template-columns:1fr ;}}
+        @media(max-width: 900px){
+            .topbar{display:none}
+            .nav{position:absolute;left:0;right:0;top:82px;background:white;display:none;flex-direction:column;align-items:stretch;padding:20px 5%;box-shadow:0 10px 20px rgba(0,0,0,.08);border-top:1px solid #eee}
+            .nav.show{display:flex}
+            .nav a{padding:12px 0;border-bottom:1px solid #ffff}
+            .mobile-menu{display:block}
+            .track-btn{text-align:center;display:block;margin-top:5px}
+            .service-grid{grid-template-columns:1fr}
+             .navbar {
+    min-height: 82px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+      min-height: 65px;
+}
+.logo-icon {
+    width: 35px;
+    height: 35px;
+    background: #e32626;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.logo-name{
+    font-size: 14px;
+    font-weight: 800;
+}
+.logo-name small{
+    font-size: 6px;
+    font-weight: 400;
+}
+        }
+        @media(max-width: 550px){
+            .wa-support-widget{bottom:20px;right:15px}
+            .wa-support-btn{padding:8px}
+            .wa-text-content{display:none}
+            .back-top{right:15px;bottom:6.5rem}
+              .navbar {
+    min-height: 82px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+      min-height: 65px;
+}
+.logo-icon {
+    width: 35px;
+    height: 35px;
+    background: #e32626;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.logo-name{
+    font-size: 14px;
+    font-weight: 800;
+}
+.logo-name small{
+    font-size: 6px;
+    font-weight: 400;
+}
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <a href="index.html" class="logo">⭐ Star<span>Express</span></a>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="services.html">Services</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </header>
 
-  <div class="container">
-    <div class="card">
-      <h2>Our Comprehensive Freight Services</h2>
-      <p style="margin-top: 0.5rem; color: #64748b;">Built for international business compliance, secure handling, and rapid transit.</p>
-      
-      <div class="services-grid">
-        <div class="service-item">
-          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80" alt="Air Courier">
-          <div class="service-content">
-            <h3>Priority Air Cargo</h3>
-            <p>Fast international transport times with guaranteed customs processing support.</p>
-          </div>
+    <div class="topbar">
+        <div class="container topbar-inner">
+            <div class="topbar-left">
+                <a href="tel:+447393389724"><span><i class="fa-solid fa-phone"></i> +44 (0) 7393-3897-24</span></a>
+                <a href="https://wa.me/639128616072" target="_blank"><span><i class="fa-brands fa-whatsapp"></i> +63 (912) 8616-072</span></a>
+                <a href="mailto:expressstar846@gmail.com"><span><i class="fa-solid fa-envelope"></i> expressstar846@gmail.com</span></a>
+                <span><i class="fa-solid fa-clock"></i> Mon - Sat: 7:30 - 18:30</span>
+            </div>
+            <div class="top-social">
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
         </div>
-        <div class="service-item">
-          <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=600&q=80" alt="Ocean Shipping">
-          <div class="service-content">
-            <h3>Ocean Freight Solutions</h3>
-            <p>Economical container loads and full cargo forwarding across major global ports.</p>
-          </div>
-        </div>
-        <div class="service-item">
-          <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=600&q=80" alt="Road Freight">
-          <div class="service-content">
-            <h3>Ground Express Courier</h3>
-            <p>Reliable door-to-door small parcel and regional freight distribution.</p>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <footer>
-    &copy; 2026 Star Express Logistics. All rights reserved.
-  </footer>
+    <header>
+        <div class="container navbar">
+            <a href="/frontend/index.html" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-star"></i></div>
+                <div class="logo-name">STAR EXPRESS<small>COURIER SERVICES & LOGISTICS</small></div>
+            </a>
+
+            <nav class="nav" id="nav">
+                <a href="/frontend/index.html">Home</a>
+                <a href="/frontend/services.html">Services</a>
+                <a href="/frontend/solution.html">Solutions</a>
+                <a href="/frontend/about.html">About Us</a>
+                <a href="/frontend/team.html">Our Team</a>
+                <a href="/frontend/contact.html">Contact</a>
+                <a href="/frontend/tracking.html" class="track-btn">Track Shipment</a>
+            </nav>
+
+            <div class="language-control" aria-label="Language selector">
+                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                <select id="languageSelect" aria-label="Choose language"></select>
+            </div>
+
+            <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <h1>Our Logistics Services</h1>
+            <p>Explore our wide array of secure, high-speed freight transport and supply chain services.</p>
+        </div>
+    </section>
+
+    <!-- Services Grid Section with Interactive Read More Cards -->
+    <section class="content-section services">
+        <div class="container">
+            <div class="section-heading">
+                <span>What We Offer</span>
+                <h2>Comprehensive Transport Solutions</h2>
+                <p>Designed for absolute efficiency, speed, and safety across local and international corridors. Click any card to learn more.</p>
+            </div>
+
+            <div class="service-grid">
+                
+                <!-- 1. Air Freight Forwarding -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1000&q=85" alt="Air Freight">
+                    </div>
+                    <div class="service-body">
+                        <i class="fa-solid fa-plane"></i>
+                        <h3>Air Freight Forwarding</h3>
+                        <p>Rapid international shipping solutions customized for high-priority packages and urgent commercial freight.</p>
+                        
+                        <div class="service-details-extended">
+                            <h4>Service Highlights</h4>
+                            <p class="extended-desc">Accelerated transit times with guaranteed priority space allocations across premier commercial and cargo airlines globally.</p>
+                            <ul class="service-features-list">
+                                <li><i class="fa-solid fa-check"></i> Airport-to-Airport & Door-to-Door options</li>
+                                <li><i class="fa-solid fa-check"></i> Real-time tracking and temperature control</li>
+                                <li><i class="fa-solid fa-check"></i> Ideal for perishable, medical, and high-value cargo</li>
+                            </ul>
+                        </div>
+
+                        <button class="read-more-btn" onclick="toggleCard(this)"><span>Read More</span> <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- 2. Ocean Cargo Shipping -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1000&q=85" alt="Ocean Freight">
+                    </div>
+                    <div class="service-body">
+                        <i class="fa-solid fa-ship"></i>
+                        <h3>Ocean Cargo Shipping</h3>
+                        <p>Cost-effective sea freight solutions handling full container loads (FCL) and less than container loads (LCL) worldwide.</p>
+                        
+                        <div class="service-details-extended">
+                            <h4>Service Highlights</h4>
+                            <p class="extended-desc">Built for massive scalability and heavy commercial cargo shipments with strategic partnerships across major international shipping lines.</p>
+                            <ul class="service-features-list">
+                                <li><i class="fa-solid fa-check"></i> Full Container Load (FCL) & LCL consolidation</li>
+                                <li><i class="fa-solid fa-check"></i> Complete documentation and port handling</li>
+                                <li><i class="fa-solid fa-check"></i> Highly competitive corporate contract rates</li>
+                            </ul>
+                        </div>
+
+                        <button class="read-more-btn" onclick="toggleCard(this)"><span>Read More</span> <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- 3. Road Freight & Trucking -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=800&q=80" alt="Road Transport">
+                    </div>
+                    <div class="service-body">
+                        <i class="fa-solid fa-truck"></i>
+                        <h3>Road Freight & Trucking</h3>
+                        <p>Reliable continental trucking networks ensuring secure, on-time doorstep deliveries across all regions.</p>
+                        
+                        <div class="service-details-extended">
+                            <h4>Service Highlights</h4>
+                            <p class="extended-desc">A diverse fleet of heavy-duty trucks, vans, and refrigerated carriers equipped with live GPS tracking and route optimization software.</p>
+                            <ul class="service-features-list">
+                                <li><i class="fa-solid fa-check"></i> Inter-city & regional distribution</li>
+                                <li><i class="fa-solid fa-check"></i> Dedicated fleet and scheduled line-haul</li>
+                                <li><i class="fa-solid fa-check"></i> Fully insured freight protection</li>
+                            </ul>
+                        </div>
+
+                        <button class="read-more-btn" onclick="toggleCard(this)"><span>Read More</span> <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- 4. Secure Warehousing -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=800&q=80" alt="Warehousing">
+                    </div>
+                    <div class="service-body">
+                        <i class="fa-solid fa-warehouse"></i>
+                        <h3>Secure Warehousing</h3>
+                        <p>Advanced climate-controlled storage facilities with integrated real-time barcode tracking systems.</p>
+                        
+                        <div class="service-details-extended">
+                            <h4>Service Highlights</h4>
+                            <p class="extended-desc">Secure storage solutions designed to keep your goods safe, organized, and ready for rapid dispatch whenever required.</p>
+                            <ul class="service-features-list">
+                                <li><i class="fa-solid fa-check"></i> 24/7 Monitored security and surveillance</li>
+                                <li><i class="fa-solid fa-check"></i> Automated inventory barcode monitoring</li>
+                                <li><i class="fa-solid fa-check"></i> Flexible short & long-term agreements</li>
+                            </ul>
+                        </div>
+
+                        <button class="read-more-btn" onclick="toggleCard(this)"><span>Read More</span> <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- 5. Supply Chain Management -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=800&q=80" alt="Supply Chain">
+                    </div>
+                    <div class="service-body">
+                        <i class="fa-solid fa-network-wired"></i>
+                        <h3>Supply Chain Management</h3>
+                        <p>End-to-end operational planning and optimization tailored for enterprise retail and manufacturing networks.</p>
+                        
+                        <div class="service-details-extended">
+                            <h4>Service Highlights</h4>
+                            <p class="extended-desc">Streamline your entire procurement-to-delivery lifecycle with our analytical insights, vendor coordination, and efficiency auditing.</p>
+                            <ul class="service-features-list">
+                                <li><i class="fa-solid fa-check"></i> Custom multi-modal transport planning</li>
+                                <li><i class="fa-solid fa-check"></i> Cost-reduction & bottleneck analysis</li>
+                                <li><i class="fa-solid fa-check"></i> Dedicated account management teams</li>
+                            </ul>
+                        </div>
+
+                        <button class="read-more-btn" onclick="toggleCard(this)"><span>Read More</span> <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- 6. Customs Clearance -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80" alt="Customs Brokerage">
+                    </div>
+                    <div class="service-body">
+                        <i class="fa-solid fa-file-shield"></i>
+                        <h3>Customs Clearance</h3>
+                        <p>Expert documentation handling and tariff consultancy to guarantee fast compliance at international ports.</p>
+                        
+                        <div class="service-details-extended">
+                            <h4>Service Highlights</h4>
+                            <p class="extended-desc">Eliminate border delays and administrative hurdles with professional brokers who handle all regulatory compliance on your behalf.</p>
+                            <ul class="service-features-list">
+                                <li><i class="fa-solid fa-check"></i> Import & export tariff documentation</li>
+                                <li><i class="fa-solid fa-check"></i> Accurate duty & tax calculations</li>
+                                <li><i class="fa-solid fa-check"></i> Direct liaison with customs authorities</li>
+                            </ul>
+                        </div>
+
+                        <button class="read-more-btn" onclick="toggleCard(this)"><span>Read More</span> <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-main">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <div class="logo footer-logo">
+                        <div class="logo-icon"><i class="fa-solid fa-star"></i></div>
+                        <div class="logo-name" style="color:#fff">STAR EXPRESS
+
+                            <small>COURIER SERVICES & LOGISTICS</small></div>
+                    </div>
+                    <p>Professional worldwide logistics services built on speed, precision security, and reliability.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="solution.html">Solution</a></li>
+                        <li><a href="team.html">Our Team</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Our Services</h4>
+                    <ul>
+                        <li><a href="services.html">Air Freight</a></li>
+                        <li><a href="services.html">Ocean Shipping</a></li>
+                        <li><a href="services.html">Road Trucking</a></li>
+                        <li><a href="services.html">Warehousing</a></li>
+                    </ul>
+                </div>
+              <div class="footer-column">
+                    <h4>Contact Us</h4>
+                    <div class="footer-contact"><i class="fa-solid fa-location-dot"></i> Springfield, Massachusetts, United States</div>
+                    <div class="footer-contact"><a href="https://wa.me/639128616072" target="_blank"><span style="display: flex; gap: 8px;"><i style="margin-top: 6px;"  class="fa-brands fa-whatsapp"></i> +63 (912) 8616-072</span></a></div>
+                    <div class="footer-contact"><a href="tel:+639128616072" target="_blank"><span style="display: flex; gap: 8px;"><i style="margin-top: 6px;"  class="fa-solid fa-phone"></i>+44 (0) 7393-3897-24</span></a></div>
+                    <div class="footer-contact"> <span style="display: flex; gap: 8px;"><a href="contact.html"><i style="margin-top: 6px;" class="fa-solid fa-envelope"></i> Send Message</a></span></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">&copy; 2026 Star Express Logistics. All Rights Reserved.</div>
+        </div>
+    </footer>
+
+    <!-- Back to Top & WhatsApp Widget -->
+    <button class="back-top" id="backTopBtn"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <div class="wa-support-widget">
+        <a href="https://wa.me/18004567890" target="_blank" class="wa-support-btn">
+            <div class="wa-icon-box">
+                <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm0 1.83c2.19 0 4.25.85 5.8 2.4 1.55 1.55 2.4 3.61 2.4 5.8 0 4.53-3.69 8.22-8.22 8.22-1.46 0-2.89-.38-4.14-1.11l-.3-.18-3.08.81.82-3-.19-.31a8.14 8.14 0 01-1.25-4.33c0-4.53 3.69-8.22 8.22-8.22zm-4.41 3.99c-.19 0-.49.07-.74.35-.25.28-.96.94-.96 2.29s.99 2.65 1.13 2.83c.14.18 1.93 2.95 4.69 4.14.65.28 1.16.45 1.56.58.66.21 1.26.18 1.73.11.53-.08 1.63-.67 1.86-1.31.23-.64.23-1.19.16-1.31-.07-.12-.25-.19-.52-.33s-1.63-.8-1.88-.89c-.25-.09-.43-.13-.61.13-.18.26-.7.89-.86 1.07-.16.18-.32.2-.59.07-.27-.13-1.14-.42-2.17-1.34-.8-.71-1.34-1.59-1.5-1.86-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.33-.02-.47-.07-.14-.61-1.48-.84-2.03-.22-.53-.45-.46-.62-.47h-.53z"/></svg>
+                <div class="wa-pulse-ring"></div>
+            </div>
+            <div class="wa-text-content">
+                <span class="wa-title">Need Help?</span>
+                <span class="wa-action">Chat on WhatsApp</span>
+            </div>
+        </a>
+    </div>
+   <script src="/frontend/language.js"></script>
+    <!-- JavaScript for Interactive Cards, Mobile Menu & Back to Top -->
+    <script>
+        // Toggle Expandable Cards
+        function toggleCard(btn) {
+            const card = btn.closest('.service-card');
+            const spanText = btn.querySelector('span');
+            
+            card.classList.toggle('expanded');
+            
+            if (card.classList.contains('expanded')) {
+                spanText.textContent = 'Read Less';
+            } else {
+                spanText.textContent = 'Read More';
+            }
+        }
+
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('mobileMenu');
+        const navMenu = document.getElementById('nav');
+        mobileMenu.addEventListener('click', () => {
+            nav.classList.toggle('show');
+        });
+
+        // Back to Top Button
+        const backTopBtn = document.getElementById('backTopBtn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 120) {
+                backTopBtn.classList.add('show');
+            } else {
+                backTopBtn.classList.remove('show');
+            }
+        });
+        backTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>

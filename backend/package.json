@@ -11,17 +11,16 @@
   "author": "BIG-D",
   "type": "commonjs",
   "main": "index.js",
-
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "nodemailer": "^10.0.10",
     "resend": "^6.28.0"
-  },
-  "devDependencies": {}
+  }
 }

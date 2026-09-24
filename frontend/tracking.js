@@ -1,63 +1,392 @@
-const API_URL = '/api/shipments';
-const DELIVERY_STAGES = ['Order Processed', 'In Transit', 'Arrived at Hub', 'Customs Clearance', 'Out for Delivery', 'Delivered'];
+document.addEventListener("DOMContentLoaded", function () {
 
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('trackForm');
-    const input = document.getElementById('trackingCodeInput');
-    const result = document.getElementById('resultSection');
-    const error = document.getElementById('errorCard');
-    const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' }[character]));
-    const formatDate = value => value ? new Date(value).toLocaleString() : 'Pending';
+    const trackForm = document.getElementById("trackForm");
+    const trackingCodeInput = document.getElementById("trackingCodeInput");
 
-    async function track(code) {
-        const response = await fetch(`${API_URL}/${encodeURIComponent(code)}`);
-        const shipment = await readResponse(response);
-        if (!response.ok) throw new Error(shipment.message || 'Tracking code not found.');
-        document.getElementById('displayCode').textContent = shipment.trackingCode;
-        document.getElementById('statusBadge').textContent = shipment.status;
-        document.getElementById('displayRecipient').textContent = shipment.receiverName || '-';
-        document.getElementById('displayDestination').textContent = shipment.destination || '-';
-        document.getElementById('displayLocation').textContent = shipment.currentLocation || shipment.location || '-';
-        document.getElementById('displayService').textContent = shipment.shippingService || shipment.shipmentType || '-';
-        const history = shipment.history || [];
-        const currentIndex = Math.max(0, DELIVERY_STAGES.indexOf(shipment.status));
-        const latestByStatus = new Map();
-        history.forEach(item => {
-            if (DELIVERY_STAGES.indexOf(item.status) <= currentIndex) latestByStatus.set(item.status, item);
+    const errorCard = document.getElementById("errorCard");
+    const resultSection = document.getElementById("resultSection");
+
+    const displayCode = document.getElementById("displayCode");
+    const statusBadge = document.getElementById("statusBadge");
+    const displayRecipient = document.getElementById("displayRecipient");
+    const displayDestination = document.getElementById("displayDestination");
+    const displayLocation = document.getElementById("displayLocation");
+    const displayService = document.getElementById("displayService");
+
+    const timelineList = document.getElementById("timelineList");
+
+
+    // =====================================================
+    // API ADDRESS
+    // =====================================================
+
+    let API_BASE = "/api/shipments";
+
+    if (
+        window.location.port === "5500" ||
+        window.location.port === "5501"
+    ) {
+        API_BASE = "http://localhost:3000/api/shipments";
+    }
+
+
+    // =====================================================
+    // SHOW ERROR
+    // =====================================================
+
+    function showError(message) {
+        if (resultSection) {
+            resultSection.style.display = "none";
+        }
+        if (errorCard) {
+            errorCard.style.display = "block";
+            errorCard.innerHTML = `
+                <i class="fa-solid fa-circle-exclamation" style="margin-right: 8px;"></i>
+                ${escapeHtml(message)}
+            `;
+        }
+    }
+
+
+    // =====================================================
+    // HIDE ERROR
+    // =====================================================
+
+    function hideError() {
+        if (errorCard) {
+            errorCard.style.display = "none";
+        }
+    }
+
+
+    // =====================================================
+    // TRACK SHIPMENT
+    // =====================================================
+
+    async function trackShipment(trackingCode) {
+        hideError();
+        if (resultSection) {
+            resultSection.style.display = "none";
+        }
+
+        try {
+            const response = await fetch(
+                `${API_BASE}/${encodeURIComponent(trackingCode)}`
+            );
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Tracking code not found.");
+            }
+
+            displayShipment(data);
+        } catch (error) {
+            console.error("Tracking error:", error);
+            showError(error.message || "Unable to connect to the shipment server.");
+        }
+    }
+
+
+    // =====================================================
+    // DISPLAY SHIPMENT
+    // =====================================================
+
+    function displayShipment(shipment) {
+        hideError();
+        if (resultSection) {
+            resultSection.style.display = "block";
+        }
+
+        if (displayCode) {
+            displayCode.textContent = shipment.trackingCode || "-";
+        }
+
+        if (statusBadge) {
+            statusBadge.textContent = shipment.status || "Order Processed";
+        }
+
+        if (displayRecipient) {
+            displayRecipient.textContent =
+                shipment.receiverName || shipment.recipientName || "-";
+        }
+
+        if (displayDestination) {
+            displayDestination.textContent = shipment.destination || "-";
+        }
+
+        if (displayLocation) {
+            displayLocation.textContent =
+                shipment.currentLocation || shipment.location || shipment.origin || "-";
+        }
+
+        if (displayService) {
+            displayService.textContent =
+                shipment.shippingService || shipment.shipmentType || "Standard Delivery";
+        }
+
+        // Render timeline keeping all history and appending a clean "Pending" next step
+        renderTimeline(
+            shipment.history || [],
+            shipment.status,
+            shipment.currentLocation || shipment.location || shipment.origin,
+            shipment
+        );
+    }
+
+
+    // =====================================================
+    // RENDER TIMELINE (SAVED HISTORY + PENDING STAGE MASKING)
+    // =====================================================
+
+    function renderTimeline(history, currentStatus, currentLocation, shipment) {
+        if (!timelineList) {
+            return;
+        }
+
+        timelineList.innerHTML = "";
+
+        // Collect all distinct status milestones saved in admin history
+        let stagesSet = new Set();
+        stagesSet.add("Order Processed");
+
+        if (history && history.length > 0) {
+            history.forEach(item => {
+                if (item && item.status) {
+                    stagesSet.add(item.status.trim());
+                }
+            });
+        }
+
+        if (currentStatus) {
+            stagesSet.add(currentStatus.trim());
+        }
+
+        let stages = Array.from(stagesSet);
+
+        // Standard logistics sequence to determine the next upcoming step automatically
+        const standardFlow = [
+            "Order Processed", 
+            "Picked Up", 
+            "In Transit", 
+            "Customs Clearance", 
+            "Out for Delivery", 
+            "Delivered"
+        ];
+
+        let nextPendingStage = "Out for Delivery";
+        const currentTrimmed = String(currentStatus || "").trim().toLowerCase();
+        const currentIndexInFlow = standardFlow.findIndex(s => s.toLowerCase() === currentTrimmed);
+        
+        if (currentIndexInFlow !== -1 && currentIndexInFlow < standardFlow.length - 1) {
+            nextPendingStage = standardFlow[currentIndexInFlow + 1];
+        } else {
+            if (currentTrimmed.includes("transit")) nextPendingStage = "Out for Delivery";
+            else if (currentTrimmed.includes("out")) nextPendingStage = "Delivered";
+            else if (currentTrimmed.includes("delivered")) {
+                nextPendingStage = null; // Fully complete, no pending step needed
+            }
+        }
+
+        // Append the next pending stage to the list if not already recorded
+        if (nextPendingStage && !stages.some(s => s.toLowerCase() === nextPendingStage.toLowerCase())) {
+            stages.push(nextPendingStage);
+        }
+
+        // Find current active index based on admin's status
+        let activeIndex = stages.findIndex(
+            s => s.toLowerCase() === currentTrimmed
+        );
+        if (activeIndex === -1) {
+            activeIndex = 0;
+        }
+
+        // Map existing history for data retention
+        const historyMap = new Map();
+        if (history && history.length > 0) {
+            history.forEach(item => {
+                if (item && item.status) {
+                    historyMap.set(item.status.trim().toLowerCase(), item);
+                }
+            });
+        }
+
+        stages.forEach(function (stage, index) {
+            const timelineItem = document.createElement("div");
+
+            let state = "pending";
+            if (index < activeIndex) {
+                state = "completed";
+            } else if (index === activeIndex) {
+                state = "active";
+            } else {
+                state = "pending";
+            }
+
+            timelineItem.className = `timeline-item ${state}`;
+
+            const stageLower = stage.toLowerCase();
+            const historyItem = historyMap.get(stageLower);
+
+            let dateText = "Pending";
+            let locationText = "Pending";
+            let noteText = "Pending";
+            // If the item is pending (future step), mask the stage name as well to read "Pending"
+            let displayStageName = (state === 'pending') ? "Pending" : stage;
+
+            if (historyItem) {
+                dateText = formatDate(historyItem.timestamp);
+                locationText = historyItem.location || currentLocation || "-";
+                noteText = historyItem.note || "";
+            } else if (index === activeIndex) {
+                dateText = formatDate(shipment.updatedAt || shipment.timestamp);
+                locationText = currentLocation || "-";
+                noteText = shipment.notes || "Status updated.";
+            } else {
+                dateText = "Pending";
+                locationText = "Pending";
+                noteText = "Pending";
+            }
+
+            if (state === 'pending') {
+                timelineItem.innerHTML = `
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header-row">
+                            <div class="timeline-status-text">
+                                ${escapeHtml(displayStageName)}
+                            </div>
+                            <div class="timeline-time">
+                                Pending
+                            </div>
+                        </div>
+                        <div class="timeline-location">
+                            <i class="fa-solid fa-location-dot" style="margin-right: 5px; color: #94a3b8;"></i>
+                            Location: Pending
+                        </div>
+                        <div style="margin-top: 6px; font-size: 12px; color: #94a3b8;">
+                            Message: Pending
+                        </div>
+                    </div>
+                `;
+            } else {
+                timelineItem.innerHTML = `
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header-row">
+                            <div class="timeline-status-text">
+                                ${escapeHtml(displayStageName)}
+                            </div>
+                            <div class="timeline-time">
+                                ${escapeHtml(dateText)}
+                            </div>
+                        </div>
+                        <div class="timeline-location">
+                            <i class="fa-solid fa-location-dot" style="margin-right: 5px; color: #cc0000;"></i>
+                            Location: ${escapeHtml(locationText)}
+                        </div>
+                        ${
+                            noteText && noteText !== "Pending"
+                            ? `<div style="margin-top: 6px; font-size: 12px; color: #64748b;">Message: ${escapeHtml(noteText)}</div>`
+                            : ""
+                        }
+                    </div>
+                `;
+            }
+
+            timelineList.appendChild(timelineItem);
         });
-        document.getElementById('timelineList').style.setProperty('--progress', `${currentIndex / (DELIVERY_STAGES.length - 1) * 100}%`);
-        document.getElementById('timelineList').innerHTML = DELIVERY_STAGES.map((stage, index) => {
-            const item = latestByStatus.get(stage);
-            const reached = index < currentIndex;
-            const active = index === currentIndex;
-            return `<div class="timeline-item ${reached ? 'completed' : active ? 'active' : 'pending'}"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-header-row"><span class="timeline-status-text">${escapeHtml(stage)}</span><span class="timeline-time">${item ? escapeHtml(formatDate(item.timestamp || item.time)) : 'Waiting for admin update'}</span></div><div class="timeline-location"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(item?.location || shipment.currentLocation || 'Pending')}</div>${item?.note ? `<p>${escapeHtml(item.note)}</p>` : ''}</div></div>`;
-        }).join('');
-        error.style.display = 'none';
-        result.style.display = 'block';
-        window.translateCurrentPage?.();
-        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        updateTimelineProgress(activeIndex, stages.length);
     }
 
-    async function readResponse(response) {
-        const text = await response.text();
-        if (!text.trim()) throw new Error(`Server returned an empty response (${response.status}).`);
-        try { return JSON.parse(text); }
-        catch (error) { throw new Error(`Server returned invalid tracking data (${response.status}).`); }
+
+    // =====================================================
+    // UPDATE TIMELINE PROGRESS LINE
+    // =====================================================
+
+    function updateTimelineProgress(activeIndex, totalItems) {
+        if (!timelineList || totalItems <= 1) {
+            if (timelineList) timelineList.style.setProperty("--progress", "0%");
+            return;
+        }
+
+        // Freeze progress line strictly at the admin's current active stage
+        const progress = (activeIndex / (totalItems - 1)) * 100;
+        timelineList.style.setProperty(
+            "--progress",
+            `${Math.min(100, Math.max(0, progress))}%`
+        );
     }
 
-    function showTrackingError(error) {
-        result.style.display = 'none';
-        errorCard.textContent = error.message || 'Tracking code not found. Please verify your reference number and try again.';
-        errorCard.style.display = 'block';
+
+    // =====================================================
+    // FORMAT DATE
+    // =====================================================
+
+    function formatDate(timestamp) {
+        if (!timestamp) {
+            return "Pending";
+        }
+        const date = new Date(timestamp);
+        if (isNaN(date.getTime())) {
+            return "Pending";
+        }
+        return date.toLocaleString();
     }
 
-    const errorCard = error;
-    form?.addEventListener('submit', event => {
-        event.preventDefault();
-        const code = input.value.trim();
-        if (!code) return;
-        track(code).catch(showTrackingError);
-    });
-    const initialCode = new URLSearchParams(window.location.search).get('tracking');
-    if (initialCode) { input.value = initialCode; track(initialCode).catch(showTrackingError); }
+
+    // =====================================================
+    // PROTECT HTML
+    // =====================================================
+
+    function escapeHtml(value) {
+        return String(value ?? "").replace(
+            /[&<>'"]/g,
+            function (character) {
+                return {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    "'": "&#039;",
+                    '"': "&quot;"
+                }[character];
+            }
+        );
+    }
+
+
+    // =====================================================
+    // TRACK FORM SUBMISSION
+    // =====================================================
+
+    if (trackForm) {
+        trackForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const trackingCode = trackingCodeInput ? trackingCodeInput.value.trim() : "";
+            if (!trackingCode) {
+                showError("Please enter your tracking number.");
+                return;
+            }
+            trackShipment(trackingCode);
+        });
+    }
+
+
+    // =====================================================
+    // AUTOMATIC TRACKING FROM URL PARAMETER
+    // =====================================================
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeFromUrl = urlParams.get("code");
+
+    if (codeFromUrl) {
+        const code = codeFromUrl.trim();
+        if (trackingCodeInput) {
+            trackingCodeInput.value = code;
+        }
+        if (code) {
+            trackShipment(code);
+        }
+    }
+
 });

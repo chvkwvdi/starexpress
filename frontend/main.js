@@ -41,8 +41,8 @@ const quoteCalculator = document.getElementById('quoteCalculator');
 const quoteResult = document.getElementById('quoteResult');
 
 function calculateQuote() {
-    const serviceRates = { land: 2.4, air: 6.8, sea: 1.7 };
-    const distanceMultipliers = { local: 1, regional: 1.45, international: 2.25 };
+    const serviceRates = { land: 20.4, air: 60.8, sea: 18.5 };
+    const distanceMultipliers = { local: 1, regional: 21.5, international: 13.5 };
     const weight = Math.max(Number(document.getElementById('quoteWeight')?.value) || 1, 1);
     const service = document.getElementById('quoteService')?.value || 'land';
     const distance = document.getElementById('quoteDistance')?.value || 'local';
@@ -204,9 +204,96 @@ document.querySelectorAll(".faq-item button").forEach(button => {
 const backTop = document.getElementById("backTop");
 
 window.addEventListener("scroll", () => {
-    backTop?.classList.toggle("show", window.scrollY > 600);
+    backTop?.classList.toggle("show", window.scrollY > 550);
 });
 
 backTop?.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+});
+document.addEventListener('DOMContentLoaded', () => {
+    // Since Node.js serves the page, an empty string routes requests cleanly to the same server
+    const BACKEND_URL = '';
+
+    const adminLinks = document.querySelectorAll('a[href="/admin-dashboard"], a[href="/admin"]');
+
+    adminLinks.forEach(link => {
+        link.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            try {
+                const checkRes = await fetch(`${BACKEND_URL}/admin-dashboard`, { 
+                    method: 'GET', 
+                    credentials: 'include',
+                    redirect: 'follow' 
+                });
+                if (checkRes.ok && checkRes.url.includes('admin')) {
+                    window.location.href = `${BACKEND_URL}/admin-dashboard`;
+                    return;
+                }
+            } catch (err) {}
+
+            showAdminModal();
+        });
+    });
+
+    function showAdminModal() {
+        const existing = document.getElementById('custom-admin-modal');
+        if (existing) existing.remove();
+
+        const modalOverlay = document.createElement('div');
+        modalOverlay.id = 'custom-admin-modal';
+        modalOverlay.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75); display: grid; place-items: center;
+            z-index: 99999; backdrop-filter: blur(4px);
+        `;
+
+        modalOverlay.innerHTML = `
+            <div style="background: #151c24; padding: 35px; border-radius: 10px; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border-top: 4px solid #e32626; text-align: center; color: #fff; font-family: 'Segoe UI', Tahoma, sans-serif; box-sizing: border-box;">
+                <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 22px;">Admin Portal Access</h3>
+                <p style="color: #9aa8b5; font-size: 13px; margin-bottom: 20px;">Enter your backend password to proceed.</p>
+                <form id="admin-modal-form">
+                    <input type="password" id="admin-password-input" placeholder="Enter Password" required autofocus
+                        style="width: 100%; height: 46px; border: 1px solid #28333f; background: #0b0f15; color: #fff; padding: 0 15px; border-radius: 6px; margin-bottom: 15px; outline: none; font-size: 15px; box-sizing: border-box;">
+                    <button type="submit"
+                        style="width: 100%; height: 46px; background: #e32626; color: #fff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 15px;">
+                        Authenticate
+                    </button>
+                </form>
+                <button id="admin-modal-close" style="background: transparent; border: none; color: #788796; margin-top: 15px; cursor: pointer; font-size: 13px;">Cancel</button>
+            </div>
+        `;
+
+        document.body.appendChild(modalOverlay);
+        const passwordInput = document.getElementById('admin-password-input');
+        passwordInput.focus();
+
+        document.getElementById('admin-modal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = passwordInput.value;
+
+            try {
+                const res = await fetch(`${BACKEND_URL}/admin-login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    window.location.href = `${BACKEND_URL}/admin-dashboard`;
+                } else {
+                    alert(data.message || 'Incorrect Password!');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            } catch (err) {
+                alert('Connection error: Could not reach the server.');
+            }
+        });
+
+        document.getElementById('admin-modal-close').addEventListener('click', () => modalOverlay.remove());
+        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.remove(); });
+    }
 });
