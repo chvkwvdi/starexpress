@@ -17,17 +17,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // =====================================================
-    // API ADDRESS
-    // =====================================================
+let API_BASE = "https://star-express-api.onrender.com/api/shipments";
 
-    let API_BASE = "/api/shipments";
-
-    if (
-        window.location.port === "5500" ||
-        window.location.port === "5501"
-    ) {
-        API_BASE = "http://localhost:3000/api/shipments";
-    }
+if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    API_BASE = "http://localhost:3000/api/shipments";
+}
 
 
     // =====================================================
