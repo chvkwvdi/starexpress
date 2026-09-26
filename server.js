@@ -8,26 +8,31 @@ const cors = require('cors');
 
 const app = express();
 
-// Middleware setup - allows requests from Live Server or any origin with credentials
+// ==========================
+// Middleware & CORS Setup
+// ==========================
+
+// Allow requests from localhost, your GitHub Pages frontend, or any origin safely with credentials
 app.use(cors({
     origin: function(origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl) or any localhost port
+        // Allow requests with no origin (like mobile apps, Postman, or direct server-to-server) or any origin
         return callback(null, true);
     },
     credentials: true
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 
-// Serve static assets from frontend and backend directories
+// Serve static assets from frontend and backend directories if hosted together
 app.use(express.static(path.join(__dirname, 'frontend')));
 app.use('/backend', express.static(path.join(__dirname, 'backend')));
 
 const PORT = process.env.PORT || 3000;
-const BACKEND_DIR = path.join(__dirname, 'backend');
+const BACKEND_DIR = __dirname;
 const DATA_FILE = path.join(BACKEND_DIR, 'shipments.json');
 
-// Ensure storage files exist
+// Ensure storage file exists
 async function ensureStorage() {
     try {
         await fs.mkdir(BACKEND_DIR, { recursive: true });
@@ -56,26 +61,24 @@ const mailTransporter = process.env.SMTP_HOST && process.env.SMTP_USER && proces
     : null;
 
 async function sendShipmentEmail(shipment, message) {
-    if (!mailTransporter || !shipment.userEmail) return false;
+    if (!mailTransporter || (!shipment.userEmail && !shipment.receiverEmail)) return false;
+    const recipient = shipment.userEmail || shipment.receiverEmail;
     await mailTransporter.sendMail({
         from: process.env.MAIL_FROM || process.env.SMTP_USER,
-        to: shipment.userEmail,
+        to: recipient,
         subject: `Shipment update: ${shipment.trackingCode} is ${shipment.status}`,
-        text: [
-            `Tracking number: ${shipment.trackingCode}`,
-            `Status: ${shipment.status}`,
-            `Current location: ${shipment.currentLocation}`,
-            '',
-            message || 'Your shipment information has been updated.'
-        ].join('\n'),
         html: `
             <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
                 <h2 style="color: #e63946;">Star Express Shipment Update</h2>
-                <p><strong>Tracking number:</strong> ${shipment.trackingCode}</p>
-                <p><strong>Status:</strong> ${shipment.status}</p>
-                <p><strong>Current location:</strong> ${shipment.currentLocation}</p>
+                <p><strong>Tracking Number:</strong> ${shipment.trackingCode}</p>
+                <p><strong>Current Status:</strong> ${shipment.status}</p>
+                <p><strong>Current Location:</strong> ${shipment.currentLocation || shipment.location}</p>
                 <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                <p>${message || 'Your shipment information has been updated.'}</p>
+                <p><strong>Message from Logistics Team:</strong></p>
+                <blockquote style="background: #f9f9f9; padding: 15px; border-left: 4px solid #e63946; margin: 0;">
+                    ${message || 'Your shipment information has been updated.'}
+                </blockquote>
+                <p style="margin-top: 20px; font-size: 0.9em; color: #777;">Thank you for choosing Star Express.</p>
             </div>
         `
     });
@@ -95,6 +98,10 @@ async function readShipments() {
             location: item.currentLocation || item.location || item.origin || ''
         })) : [];
     } catch (error) {
+        if (error.code === 'ENOENT') {
+            await fs.writeFile(DATA_FILE, '[]', 'utf8');
+            return [];
+        }
         return [];
     }
 }
@@ -104,39 +111,8 @@ async function writeShipments(shipments) {
     await fs.writeFile(DATA_FILE, JSON.stringify(shipments, null, 2), 'utf8');
 }
 
-function normalizeShipment(input) {
-    const now = new Date().toISOString();
-    const trackingCode = String(input.trackingCode || '').trim();
-    const currentLocation = String(input.currentLocation || input.location || input.origin || '').trim();
-    return {
-        trackingCode,
-        senderName: String(input.senderName || '').trim(),
-        receiverName: String(input.receiverName || input.recipientName || '').trim(),
-        userEmail: String(input.userEmail || input.receiverEmail || '').trim(),
-        origin: String(input.origin || '').trim(),
-        destination: String(input.destination || '').trim(),
-        currentLocation,
-        location: currentLocation,
-        status: String(input.status || 'Order Processed').trim(),
-        shipmentType: String(input.shipmentType || 'International Express').trim(),
-        shippingService: String(input.shippingService || 'Standard Delivery').trim(),
-        packageWeight: String(input.packageWeight || '').trim(),
-        estimatedDelivery: String(input.estimatedDelivery || '').trim(),
-        packageDescription: String(input.packageDescription || '').trim(),
-        notes: String(input.notes || '').trim(),
-        createdAt: input.createdAt || now,
-        updatedAt: now,
-        history: Array.isArray(input.history) && input.history.length ? input.history : [{
-            status: String(input.status || 'Order Processed').trim(),
-            location: currentLocation,
-            timestamp: now,
-            note: 'Shipment registered.'
-        }]
-    };
-}
-
 // ==========================
-// Authentication API Route
+// Authentication API Routes
 // ==========================
 
 app.post('/api/admin-login', (req, res) => {
@@ -150,8 +126,8 @@ app.post('/api/admin-login', (req, res) => {
     if (inputEmail === adminEmail && inputPassword === adminPassword) {
         res.cookie('admin_auth', 'true', {
             httpOnly: true,
-            secure: false, // set to true if using HTTPS in production
-            sameSite: 'lax',
+            secure: true, // Required for HTTPS / Cross-site environments like GitHub Pages -> Render
+            sameSite: 'none', // Required for cross-origin frontend/backend setups
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
         return res.json({ success: true, message: 'Login successful' });
@@ -160,7 +136,7 @@ app.post('/api/admin-login', (req, res) => {
 });
 
 app.get('/admin-logout', (req, res) => {
-    res.clearCookie('admin_auth');
+    res.clearCookie('admin_auth', { sameSite: 'none', secure: true });
     res.redirect('/admin_3.html');
 });
 
@@ -168,98 +144,153 @@ app.get('/admin-logout', (req, res) => {
 // Shipment & Tracking API Routes
 // ==========================
 
+// 1. GET: Fetch all shipments
 app.get('/api/shipments', async (req, res) => {
-    try { 
-        res.json(await readShipments()); 
-    } catch (error) { 
-        res.status(500).json({ message: 'Unable to load shipments.' }); 
+    try {
+        const shipments = await readShipments();
+        res.json(shipments);
+    } catch (error) {
+        console.error('Error reading shipments:', error);
+        res.status(500).json({ success: false, message: 'Unable to load shipments.' });
     }
 });
 
+// 2. GET: Fetch single shipment by tracking code (Used by GitHub Live tracking pages)
 app.get('/api/shipments/:trackingCode', async (req, res) => {
     try {
-        const code = req.params.trackingCode.toLowerCase();
-        const shipment = (await readShipments()).find(item => item.trackingCode.toLowerCase() === code);
-        if (!shipment) return res.status(404).json({ message: 'Shipment not found.' });
+        const shipments = await readShipments();
+        const code = req.params.trackingCode.trim().toLowerCase();
+        const shipment = shipments.find(s => s.trackingCode.trim().toLowerCase() === code);
+        
+        if (!shipment) {
+            return res.status(404).json({ success: false, message: 'Tracking code not found.' });
+        }
         res.json(shipment);
-    } catch (error) { 
-        res.status(500).json({ message: 'Unable to load shipment.' }); 
+    } catch (error) {
+        console.error('Error reading shipment:', error);
+        res.status(500).json({ success: false, message: 'Server error loading shipment.' });
     }
 });
 
+// 3. POST: Create a new shipment
 app.post('/api/shipments', async (req, res) => {
     try {
-        const shipment = normalizeShipment(req.body);
-        if (!shipment.trackingCode || !shipment.receiverName || !shipment.destination) {
-            return res.status(400).json({ message: 'Tracking code, receiver, and destination are required.' });
+        const input = req.body;
+        const now = new Date().toISOString();
+        const trackingCode = String(input.trackingCode || '').trim();
+        const currentLocation = String(input.currentLocation || input.location || input.origin || '').trim();
+        
+        if (!trackingCode || !input.receiverName || !input.destination) {
+            return res.status(400).json({ success: false, message: 'Tracking code, receiver, and destination are required.' });
         }
+
         const shipments = await readShipments();
-        if (shipments.some(item => item.trackingCode.toLowerCase() === shipment.trackingCode.toLowerCase())) {
-            return res.status(409).json({ message: 'That tracking code already exists.' });
+        if (shipments.some(item => item.trackingCode.toLowerCase() === trackingCode.toLowerCase())) {
+            return res.status(409).json({ success: false, message: 'That tracking code already exists.' });
         }
-        shipments.push(shipment);
+
+        const newShipment = {
+            trackingCode,
+            senderName: String(input.senderName || '').trim(),
+            receiverName: String(input.receiverName || '').trim(),
+            userEmail: String(input.userEmail || input.receiverEmail || '').trim(),
+            origin: String(input.origin || '').trim(),
+            destination: String(input.destination || '').trim(),
+            currentLocation,
+            location: currentLocation,
+            status: String(input.status || 'Order Processed').trim(),
+            shipmentType: String(input.shipmentType || 'International Express').trim(),
+            shippingService: String(input.shippingService || 'Standard Delivery').trim(),
+            packageWeight: String(input.packageWeight || '').trim(),
+            estimatedDelivery: String(input.estimatedDelivery || '').trim(),
+            packageDescription: String(input.packageDescription || '').trim(),
+            notes: String(input.notes || '').trim(),
+            createdAt: now,
+            updatedAt: now,
+            history: [{
+                status: String(input.status || 'Order Processed').trim(),
+                location: currentLocation,
+                timestamp: now,
+                note: 'Shipment registered.'
+            }]
+        };
+
+        shipments.push(newShipment);
         await writeShipments(shipments);
-        res.status(201).json(shipment);
-    } catch (error) { 
-        res.status(500).json({ message: 'Unable to create shipment.' }); 
+        res.status(201).json(newShipment);
+    } catch (error) {
+        console.error('Error creating shipment:', error);
+        res.status(500).json({ success: false, message: 'Unable to create shipment.' });
     }
 });
 
+// 4. PATCH: Update shipment status & send email notification
 app.patch('/api/shipments/:trackingCode', async (req, res) => {
     try {
+        const code = req.params.trackingCode.trim().toLowerCase();
+        const { status, currentLocation, location, customMessage } = req.body;
+        const pos = currentLocation || location || 'In Transit';
+
         const shipments = await readShipments();
-        const index = shipments.findIndex(item => item.trackingCode.toLowerCase() === req.params.trackingCode.toLowerCase());
-        if (index === -1) return res.status(404).json({ message: 'Shipment not found.' });
-        
+        const index = shipments.findIndex(s => s.trackingCode.trim().toLowerCase() === code);
+
+        if (index === -1) {
+            return res.status(404).json({ success: false, message: 'Shipment not found in database.' });
+        }
+
         const current = shipments[index];
-        const status = String(req.body.status || current.status).trim();
-        const location = String(req.body.currentLocation || req.body.location || current.currentLocation || '').trim();
         const updatedAt = new Date().toISOString();
         
-        shipments[index] = { 
-            ...current, 
-            status, 
-            location, 
-            currentLocation: location, 
-            updatedAt, 
-            history: [
-                ...(current.history || []), 
-                { 
-                    status, 
-                    location, 
-                    timestamp: updatedAt, 
-                    note: String(req.body.customMessage || '').trim() 
-                }
-            ] 
-        };
+        current.status = status || current.status;
+        current.currentLocation = pos;
+        current.location = pos;
+        current.updatedAt = updatedAt;
         
+        if (!current.history) current.history = [];
+        current.history.push({
+            status: current.status,
+            location: pos,
+            timestamp: updatedAt,
+            note: customMessage || 'Status updated by logistics team.'
+        });
+
+        shipments[index] = current;
         await writeShipments(shipments);
-        
+
+        // Send server-side email if configured
         let emailSent = false;
-        let emailError = '';
         try {
-            emailSent = await sendShipmentEmail(shipments[index], req.body.customMessage);
-        } catch (error) {
-            emailError = 'Shipment saved, but email dispatch failed.';
+            emailSent = await sendShipmentEmail(current, customMessage);
+        } catch (emailErr) {
+            console.error("Email dispatch warning:", emailErr.message);
         }
-        
-        res.json({ ...shipments[index], emailSent, emailConfigured: Boolean(mailTransporter), emailError });
-    } catch (error) { 
-        res.status(500).json({ message: 'Unable to update shipment.' }); 
+
+        res.status(200).json({ ...current, emailSent });
+    } catch (error) {
+        console.error("Error updating shipment:", error);
+        res.status(500).json({ success: false, message: "Failed to update shipment." });
     }
 });
 
+// 5. DELETE: Remove shipment
 app.delete('/api/shipments/:trackingCode', async (req, res) => {
     try {
-        const shipments = await readShipments();
-        const index = shipments.findIndex(item => item.trackingCode.toLowerCase() === req.params.trackingCode.toLowerCase());
-        if (index === -1) return res.status(404).json({ message: 'Shipment not found.' });
-        
-        const [deleted] = shipments.splice(index, 1);
+        const code = req.params.trackingCode.trim().toLowerCase();
+        let shipments = await readShipments();
+        const index = shipments.findIndex(s => s.trackingCode.trim().toLowerCase() === code);
+
+        if (index === -1) {
+            return res.status(404).json({ success: false, message: 'Shipment not found.' });
+        }
+
+        const deleted = shipments[index];
+        shipments = shipments.filter(s => s.trackingCode.trim().toLowerCase() !== code);
         await writeShipments(shipments);
-        res.json({ success: true, trackingCode: deleted.trackingCode });
+
+        res.json({ success: true, trackingCode: deleted.trackingCode, message: 'Shipment deleted successfully.' });
     } catch (error) {
-        res.status(500).json({ message: 'Unable to delete shipment.' });
+        console.error('Error deleting shipment:', error);
+        res.status(500).json({ success: false, message: 'Unable to delete shipment.' });
     }
 });
 
@@ -270,14 +301,11 @@ app.get('/api/health', (req, res) => res.json({ ok: true, emailConfigured: Boole
 // ==========================
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'frontend', 'index.html')));
-app.get('/tracking.html', (req, res) => res.sendFile(path.join(__dirname, 'frontend', 'tracking.html')));
 
-// Serve admin_3.html as the login page
 app.get(['/admin_3.html', '/admin-login.html'], (req, res) => {
     res.sendFile(path.join(__dirname, 'backend', 'admin_3.html'));
 });
 
-// Protect admin.html (Dashboard) - Only accessible if cookie is set
 app.get(['/admin.html', '/admin'], (req, res) => {
     if (req.cookies && req.cookies.admin_auth === 'true') {
         return res.sendFile(path.join(__dirname, 'backend', 'admin.html'));
