@@ -7,7 +7,6 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
 const EMAILJS_SERVICE_ID = 'service_zkfo8d3';
 const EMAILJS_TEMPLATE_ID = 'template_08qdtfh';
 
-
 document.addEventListener('DOMContentLoaded', () => {
     const createForm = document.getElementById('createShipmentForm');
     const createMessage = document.getElementById('createResponseMsg');
@@ -19,16 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateMessage = document.getElementById('updateResponseMsg');
     
     const generateTrackingCode = () => `SE${Math.floor(1000000000000 + Math.random() * 9000000000000)}`;
-    if (trackingInput) trackingInput.value = generateTrackingCode();
+    if (trackingInput) {
+        trackingInput.value = generateTrackingCode();
+    }
     
     const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' }[character]));
-
-    async function getShipments() {
-        const response = await fetch(API_URL, { credentials: 'include' });
-        const result = await readResponse(response);
-        if (!response.ok) throw new Error(result.message || 'Unable to load shipments.');
-        return Array.isArray(result) ? result : [];
-    }
 
     async function readResponse(response) {
         const text = await response.text();
@@ -37,9 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
         catch (error) { throw new Error(`Server returned invalid data (${response.status}).`); }
     }
 
+    async function getShipments() {
+        const response = await fetch(API_URL, { credentials: 'include' });
+        const result = await readResponse(response);
+        if (!response.ok) throw new Error(result.message || 'Unable to load shipments.');
+        return Array.isArray(result) ? result : [];
+    }
+
     async function sendEmailJsFromBrowser(shipment, message) {
         if (typeof emailjs === 'undefined') {
-            throw new Error('EmailJS is not loaded. Check your internet connection.');
+            throw new Error('EmailJS is not loaded.');
         }
         if (!shipment.userEmail) {
             throw new Error('This shipment has no recipient email address.');
@@ -54,17 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
             custom_message: message || 'Your shipment information has been updated.',
             time: new Date().toLocaleString()
         };
-        await Promise.race([
-            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('EmailJS request timed out.')), 15000))
-        ]);
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
     }
 
     function updatePreview() {
-        document.getElementById('prevBadge').textContent = document.getElementById('editStatus').value;
-        document.getElementById('prevTracking').textContent = document.getElementById('editTrackingCode').value || '--';
-        document.getElementById('prevPosition').textContent = document.getElementById('editCurrentPosition').value || '--';
-        document.getElementById('prevMessage').textContent = document.getElementById('customEmailMessage').value || '--';
+        const statusEl = document.getElementById('editStatus');
+        const trackingEl = document.getElementById('editTrackingCode');
+        const posEl = document.getElementById('editCurrentPosition');
+        const msgEl = document.getElementById('customEmailMessage');
+
+        if (document.getElementById('prevBadge')) document.getElementById('prevBadge').textContent = statusEl ? statusEl.value : '';
+        if (document.getElementById('prevTracking')) document.getElementById('prevTracking').textContent = trackingEl ? trackingEl.value || '--' : '--';
+        if (document.getElementById('prevPosition')) document.getElementById('prevPosition').textContent = posEl ? posEl.value || '--' : '--';
+        if (document.getElementById('prevMessage')) document.getElementById('prevMessage').textContent = msgEl ? msgEl.value || '--' : '--';
     }
 
     function selectShipment(shipment) {
@@ -78,51 +81,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderShipments(shipments) {
         if (shipmentCount) shipmentCount.textContent = shipments.length;
-        shipmentsContainer.style.display = 'block';
-        shipmentsContainer.innerHTML = shipments.length ? shipments.map(shipment => `
-            <article class="active-shipment-item">
-                <div class="shipment-meta">
-                    <div>
-                        <span class="badge-code">${escapeHtml(shipment.trackingCode)}</span> 
-                        <strong>${escapeHtml(shipment.receiverName)}</strong> 
-                        <span>(${escapeHtml(shipment.userEmail)})</span>
+        if (shipmentsContainer) {
+            shipmentsContainer.style.display = 'block';
+            shipmentsContainer.innerHTML = shipments.length ? shipments.map(shipment => `
+                <article class="active-shipment-item">
+                    <div class="shipment-meta">
+                        <div>
+                            <span class="badge-code">${escapeHtml(shipment.trackingCode)}</span> 
+                            <strong>${escapeHtml(shipment.receiverName)}</strong> 
+                            <span>(${escapeHtml(shipment.userEmail)})</span>
+                        </div>
+                        <span class="badge-status">${escapeHtml(shipment.status)}</span>
                     </div>
-                    <span class="badge-status">${escapeHtml(shipment.status)}</span>
-                </div>
-                <div class="progress-indicator">
-                    <span><i class="fas fa-map-marker-alt"></i> <strong>Current Position:</strong> ${escapeHtml(shipment.currentLocation || shipment.location)}</span>
-                    <span><strong>Destination:</strong> ${escapeHtml(shipment.destination)}</span>
-                </div>
-                <div class="shipment-actions">
-                    <button type="button" class="btn edit-shipment" data-code="${escapeHtml(shipment.trackingCode)}"><i class="fas fa-edit"></i> Edit Position</button>
-                    <button type="button" class="btn btn-danger delete-shipment" data-code="${escapeHtml(shipment.trackingCode)}"><i class="fas fa-trash"></i> Delete Shipment</button>
-                </div>
-            </article>
-        `).join('') : '<p>No shipments found.</p>';
-        
-        shipmentsContainer.querySelectorAll('.edit-shipment').forEach(button => button.addEventListener('click', () => selectShipment(shipments.find(item => item.trackingCode === button.dataset.code))));
-        shipmentsContainer.querySelectorAll('.delete-shipment').forEach(button => button.addEventListener('click', async () => {
-            if (!window.confirm(`Delete shipment ${button.dataset.code}? This cannot be undone.`)) return;
-            button.disabled = true;
-            try {
-                const response = await fetch(`${API_URL}/${encodeURIComponent(button.dataset.code)}`, { 
-                    method: 'DELETE',
-                    credentials: 'include'
+                    <div class="progress-indicator">
+                        <span><i class="fas fa-map-marker-alt"></i> <strong>Current Position:</strong> ${escapeHtml(shipment.currentLocation || shipment.location)}</span>
+                        <span><strong>Destination:</strong> ${escapeHtml(shipment.destination)}</span>
+                    </div>
+                    <div class="shipment-actions">
+                        <button type="button" class="btn edit-shipment" data-code="${escapeHtml(shipment.trackingCode)}"><i class="fas fa-edit"></i> Edit Position</button>
+                        <button type="button" class="btn btn-danger delete-shipment" data-code="${escapeHtml(shipment.trackingCode)}"><i class="fas fa-trash"></i> Delete Shipment</button>
+                    </div>
+                </article>
+            `).join('') : '<p>No shipments found.</p>';
+            
+            shipmentsContainer.querySelectorAll('.edit-shipment').forEach(button => {
+                button.addEventListener('click', () => {
+                    const match = shipments.find(item => item.trackingCode === button.dataset.code);
+                    if (match) selectShipment(match);
                 });
-                const result = await readResponse(response);
-                if (!response.ok) throw new Error(result.message || 'Unable to delete shipment.');
-                await loadShipments();
-                updateMessage.textContent = `Shipment ${result.trackingCode} deleted.`;
-            } catch (error) {
-                button.disabled = false;
-                updateMessage.textContent = error.message;
-            }
-        }));
+            });
+
+            shipmentsContainer.querySelectorAll('.delete-shipment').forEach(button => {
+                button.addEventListener('click', async () => {
+                    if (!window.confirm(`Delete shipment ${button.dataset.code}? This cannot be undone.`)) return;
+                    button.disabled = true;
+                    try {
+                        const response = await fetch(`${API_URL}/${encodeURIComponent(button.dataset.code)}`, { 
+                            method: 'DELETE',
+                            credentials: 'include'
+                        });
+                        const result = await readResponse(response);
+                        if (!response.ok) throw new Error(result.message || 'Unable to delete shipment.');
+                        await loadShipments();
+                        if (updateMessage) updateMessage.textContent = `Shipment ${result.trackingCode} deleted successfully.`;
+                    } catch (error) {
+                        button.disabled = false;
+                        if (updateMessage) updateMessage.textContent = error.message;
+                    }
+                });
+            });
+        }
     }
 
     async function loadShipments() {
-        try { renderShipments(await getShipments()); }
-        catch (error) { shipmentsContainer.style.display = 'block'; shipmentsContainer.innerHTML = `<p>${escapeHtml(error.message)}</p>`; }
+        try { 
+            const data = await getShipments();
+            renderShipments(data); 
+        } catch (error) { 
+            if (shipmentsContainer) {
+                shipmentsContainer.style.display = 'block'; 
+                shipmentsContainer.innerHTML = `<p>${escapeHtml(error.message)}</p>`; 
+            }
+        }
     }
 
     createForm?.addEventListener('submit', async event => {
@@ -136,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             destination: document.getElementById('destinationLocation').value 
         };
         try {
+            createMessage.textContent = 'Saving order...';
             const response = await fetch(API_URL, { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' }, 
@@ -144,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const result = await readResponse(response);
             if (!response.ok) throw new Error(result.message);
-            createMessage.textContent = `Shipment created. Tracking code: ${result.trackingCode}`;
+            createMessage.textContent = `Shipment created successfully! Tracking code: ${result.trackingCode}`;
             createForm.reset();
             trackingInput.value = generateTrackingCode();
             await loadShipments();
@@ -152,8 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     ['editStatus', 'editCurrentPosition', 'customEmailMessage'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', updatePreview);
-        document.getElementById(id)?.addEventListener('change', updatePreview);
+        const el = document.getElementById(id);
+        el?.addEventListener('input', updatePreview);
+        el?.addEventListener('change', updatePreview);
     });
     
     listButton?.addEventListener('click', loadShipments);
@@ -165,21 +187,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!code) { updateMessage.textContent = 'Select a shipment first.'; return; }
         try {
             const customMessage = document.getElementById('customEmailMessage').value;
-            updateMessage.textContent = 'Saving shipment update...';
+            updateMessage.textContent = 'Saving shipment update & sending email...';
             const response = await fetch(`${API_URL}/${encodeURIComponent(code)}`, { 
                 method: 'PATCH', 
                 headers: { 'Content-Type': 'application/json' }, 
                 credentials: 'include',
-                body: JSON.stringify({ status: document.getElementById('editStatus').value, currentLocation: document.getElementById('editCurrentPosition').value, customMessage, skipEmail: true }) 
+                body: JSON.stringify({ 
+                    status: document.getElementById('editStatus').value, 
+                    currentLocation: document.getElementById('editCurrentPosition').value, 
+                    customMessage 
+                }) 
             });
             const result = await readResponse(response);
             if (!response.ok) throw new Error(result.message);
-            updateMessage.textContent = 'Shipment saved. Sending notification...';
+
+            // Trigger immediate EmailJS notification from browser
             try {
                 await sendEmailJsFromBrowser(result, customMessage);
-                updateMessage.textContent = `Shipment ${result.trackingCode} updated. Notification sent to ${result.userEmail}.`;
+                updateMessage.textContent = `Successfully updated and email sent to ${result.userEmail}!`;
             } catch (emailError) {
-                updateMessage.textContent = `Shipment saved, but notification failed: ${emailError.message}`;
+                updateMessage.textContent = `Shipment saved on server, but email notification had an issue: ${emailError.message}`;
             }
             await loadShipments();
         } catch (error) { updateMessage.textContent = error.message; }

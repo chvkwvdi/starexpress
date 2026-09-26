@@ -11,11 +11,8 @@ const app = express();
 // ==========================
 // Middleware & CORS Setup
 // ==========================
-
-// Allow requests from localhost, your GitHub Pages frontend, or any origin safely with credentials
 app.use(cors({
     origin: function(origin, callback) {
-        // Allow requests with no origin (like mobile apps, Postman, or direct server-to-server) or any origin
         return callback(null, true);
     },
     credentials: true
@@ -24,7 +21,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// Serve static assets from frontend and backend directories if hosted together
+// Serve static assets from frontend and backend directories
 app.use(express.static(path.join(__dirname, 'frontend')));
 app.use('/backend', express.static(path.join(__dirname, 'backend')));
 
@@ -114,7 +111,6 @@ async function writeShipments(shipments) {
 // ==========================
 // Authentication API Routes
 // ==========================
-
 app.post('/api/admin-login', (req, res) => {
     const { email, password } = req.body || {};
     const inputEmail = String(email || '').trim();
@@ -126,9 +122,9 @@ app.post('/api/admin-login', (req, res) => {
     if (inputEmail === adminEmail && inputPassword === adminPassword) {
         res.cookie('admin_auth', 'true', {
             httpOnly: true,
-            secure: true, // Required for HTTPS / Cross-site environments like GitHub Pages -> Render
-            sameSite: 'none', // Required for cross-origin frontend/backend setups
-            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            secure: true, 
+            sameSite: 'none', 
+            maxAge: 24 * 60 * 60 * 1000 
         });
         return res.json({ success: true, message: 'Login successful' });
     }
@@ -155,7 +151,7 @@ app.get('/api/shipments', async (req, res) => {
     }
 });
 
-// 2. GET: Fetch single shipment by tracking code (Used by GitHub Live tracking pages)
+// 2. GET: Fetch single shipment by tracking code
 app.get('/api/shipments/:trackingCode', async (req, res) => {
     try {
         const shipments = await readShipments();
@@ -224,7 +220,7 @@ app.post('/api/shipments', async (req, res) => {
     }
 });
 
-// 4. PATCH: Update shipment status & send email notification
+// 4. PATCH: Update shipment status & send email notification immediately
 app.patch('/api/shipments/:trackingCode', async (req, res) => {
     try {
         const code = req.params.trackingCode.trim().toLowerCase();
@@ -257,7 +253,7 @@ app.patch('/api/shipments/:trackingCode', async (req, res) => {
         shipments[index] = current;
         await writeShipments(shipments);
 
-        // Send server-side email if configured
+        // Send email immediately via configured SMTP
         let emailSent = false;
         try {
             emailSent = await sendShipmentEmail(current, customMessage);
@@ -299,7 +295,6 @@ app.get('/api/health', (req, res) => res.json({ ok: true, emailConfigured: Boole
 // ==========================
 // Page Routing & Protection
 // ==========================
-
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'frontend', 'index.html')));
 
 app.get(['/admin_3.html', '/admin-login.html'], (req, res) => {
