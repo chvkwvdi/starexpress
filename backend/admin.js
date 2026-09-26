@@ -1,4 +1,3 @@
-// Universal API URL configuration pointing to your live Render backend
 let API_URL = 'https://starexpress-qxi0.onrender.com/api/shipments';
 
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
