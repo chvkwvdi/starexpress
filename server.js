@@ -21,8 +21,13 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// Serve static assets from frontend and backend directories
+// ==========================
+// Static File Routing (Fixed Paths)
+// ==========================
+// Serve frontend files (if any)
 app.use(express.static(path.join(__dirname, 'frontend')));
+// Serve backend files directly so admin.html and admin.js can load scripts properly
+app.use(express.static(path.join(__dirname, 'backend')));
 app.use('/backend', express.static(path.join(__dirname, 'backend')));
 
 const PORT = process.env.PORT || 3000;
@@ -140,7 +145,6 @@ app.get('/admin-logout', (req, res) => {
 // Shipment & Tracking API Routes
 // ==========================
 
-// 1. GET: Fetch all shipments
 app.get('/api/shipments', async (req, res) => {
     try {
         const shipments = await readShipments();
@@ -151,7 +155,6 @@ app.get('/api/shipments', async (req, res) => {
     }
 });
 
-// 2. GET: Fetch single shipment by tracking code
 app.get('/api/shipments/:trackingCode', async (req, res) => {
     try {
         const shipments = await readShipments();
@@ -168,7 +171,6 @@ app.get('/api/shipments/:trackingCode', async (req, res) => {
     }
 });
 
-// 3. POST: Create a new shipment
 app.post('/api/shipments', async (req, res) => {
     try {
         const input = req.body;
@@ -220,7 +222,6 @@ app.post('/api/shipments', async (req, res) => {
     }
 });
 
-// 4. PATCH: Update shipment status & send email notification immediately
 app.patch('/api/shipments/:trackingCode', async (req, res) => {
     try {
         const code = req.params.trackingCode.trim().toLowerCase();
@@ -253,7 +254,6 @@ app.patch('/api/shipments/:trackingCode', async (req, res) => {
         shipments[index] = current;
         await writeShipments(shipments);
 
-        // Send email immediately via configured SMTP
         let emailSent = false;
         try {
             emailSent = await sendShipmentEmail(current, customMessage);
@@ -268,7 +268,6 @@ app.patch('/api/shipments/:trackingCode', async (req, res) => {
     }
 });
 
-// 5. DELETE: Remove shipment
 app.delete('/api/shipments/:trackingCode', async (req, res) => {
     try {
         const code = req.params.trackingCode.trim().toLowerCase();
