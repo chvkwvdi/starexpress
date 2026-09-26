@@ -1,11 +1,13 @@
-// Universal API URL configuration for Localhost (any port) and Live Production
-let API_URL = '/api/shipments';
-if (window.location.hostname === 'localhost' && window.location.port !== '3000') {
-    API_URL = `http://${window.location.hostname}:3000/api/shipments`;
+// Universal API URL configuration pointing to your live Render backend
+let API_URL = 'https://starexpress-qxi0.onrender.com/api/shipments';
+
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    API_URL = 'http://localhost:3000/api/shipments';
 }
 
 const EMAILJS_SERVICE_ID = 'service_zkfo8d3';
 const EMAILJS_TEMPLATE_ID = 'template_08qdtfh';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const createForm = document.getElementById('createShipmentForm');
