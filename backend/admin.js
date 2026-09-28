@@ -149,11 +149,17 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const shipment = { 
             trackingCode: trackingInput.value, 
-            senderName: document.getElementById('senderName').value, 
-            receiverName: document.getElementById('receiverName').value, 
-            userEmail: document.getElementById('receiverEmail').value, 
-            origin: document.getElementById('originLocation').value, 
-            destination: document.getElementById('destinationLocation').value 
+            senderName: document.getElementById('senderName')?.value || '', 
+            receiverName: document.getElementById('receiverName')?.value || '', 
+            userEmail: document.getElementById('receiverEmail')?.value || '', 
+            origin: document.getElementById('originLocation')?.value || '', 
+            destination: document.getElementById('destinationLocation')?.value || '',
+            shipmentType: document.getElementById('shipmentType')?.value || 'International Express',
+            shippingService: document.getElementById('shippingService')?.value || 'Standard Delivery',
+            packageWeight: document.getElementById('packageWeight')?.value || '',
+            estimatedDelivery: document.getElementById('estimatedDelivery')?.value || '',
+            packageDescription: document.getElementById('packageDescription')?.value || '',
+            notes: document.getElementById('notes')?.value || ''
         };
         try {
             createMessage.textContent = 'Saving order...';
@@ -206,7 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 await sendEmailJsFromBrowser(result, customMessage);
                 updateMessage.textContent = `Successfully updated and email sent to ${result.userEmail}!`;
             } catch (emailError) {
-                updateMessage.textContent = `Shipment saved on server, but email notification had an issue: ${emailError.message}`;
+                const errorMsg = emailError?.message || emailError || 'Unknown email service error';
+                updateMessage.textContent = `Shipment saved on server, but email notification had an issue: ${errorMsg}`;
             }
             await loadShipments();
         } catch (error) { updateMessage.textContent = error.message; }
