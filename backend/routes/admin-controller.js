@@ -2,21 +2,9 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs/promises');
 const path = require('path');
-const nodemailer = require('nodemailer');
 
-// Correct path pointing to shipments.json in the backend folder
-const DATA_FILE = path.join(__dirname, '../shipments.json');
-
-// Configure your email transporter
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT || 587),
-    secure: process.env.SMTP_SECURE === 'true',
-    auth: {
-        user: process.env.SMTP_USER || 'your-email@gmail.com',
-        pass: process.env.SMTP_PASS || 'your-email-app-password'
-    }
-});
+// Bulletproof absolute path pointing directly to shipments.json in the root working directory
+const DATA_FILE = path.join(process.cwd(), 'shipments.json');
 
 async function readShipments() {
     try {
@@ -121,7 +109,7 @@ router.post('/shipments', async (req, res) => {
     }
 });
 
-// 4. PATCH: Update shipment status & send email notification
+// 4. PATCH: Update shipment status instantly (Email handled via EmailJS in frontend)
 router.patch('/shipments/:trackingCode', async (req, res) => {
     try {
         const code = req.params.trackingCode.trim().toLowerCase();
@@ -154,37 +142,8 @@ router.patch('/shipments/:trackingCode', async (req, res) => {
         shipments[index] = current;
         await writeShipments(shipments);
 
-        // Send email notification if SMTP is configured and user email exists
-        let emailSent = false;
-        if ((current.userEmail || current.receiverEmail) && process.env.SMTP_HOST) {
-            const recipientEmail = current.userEmail || current.receiverEmail;
-            try {
-                await transporter.sendMail({
-                    from: process.env.MAIL_FROM || process.env.SMTP_USER,
-                    to: recipientEmail,
-                    subject: `Shipment update: ${current.trackingCode} is ${current.status}`,
-                    html: `
-                        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                            <h2 style="color: #e63946;">Star Express Shipment Update</h2>
-                            <p><strong>Tracking Number:</strong> ${current.trackingCode}</p>
-                            <p><strong>Current Status:</strong> ${current.status}</p>
-                            <p><strong>Current Location:</strong> ${pos}</p>
-                            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                            <p><strong>Message from Logistics Team:</strong></p>
-                            <blockquote style="background: #f9f9f9; padding: 15px; border-left: 4px solid #e63946; margin: 0;">
-                                ${customMessage || 'Your shipment information has been updated.'}
-                            </blockquote>
-                            <p style="margin-top: 20px; font-size: 0.9em; color: #777;">Thank you for choosing Star Express.</p>
-                        </div>
-                    `
-                });
-                emailSent = true;
-            } catch (emailErr) {
-                console.error("Email dispatch warning:", emailErr.message);
-            }
-        }
-
-        res.status(200).json({ ...current, emailSent });
+        // Instant, non-blocking response so the admin panel never hangs
+        res.status(200).json(current);
     } catch (error) {
         console.error("Error updating shipment:", error);
         res.status(500).json({ success: false, message: "Failed to update shipment." });
