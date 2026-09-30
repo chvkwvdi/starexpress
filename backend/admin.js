@@ -40,14 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function sendEmailJsFromBrowser(shipment, message) {
         if (typeof emailjs === 'undefined') {
-            throw new Error('EmailJS is not loaded.');
+            throw new Error('EmailJS library is not loaded on the page.');
         }
         if (!shipment.userEmail) {
             throw new Error('This shipment has no recipient email address.');
         }
         const params = {
             to_email: shipment.userEmail,
-            to_name: shipment.receiverName,
+            to_name: shipment.receiverName || 'Valued Customer',
             name: 'Star Express Logistics',
             tracking_code: shipment.trackingCode,
             status: shipment.status,
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             custom_message: message || 'Your shipment information has been updated.',
             time: new Date().toLocaleString()
         };
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+        return await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
     }
 
     function updatePreview() {
@@ -191,9 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const code = document.getElementById('editTrackingCode').value;
         if (!code) { updateMessage.textContent = 'Select a shipment first.'; return; }
+        
         try {
             const customMessage = document.getElementById('customEmailMessage').value;
-            updateMessage.textContent = 'Saving shipment update & sending email...';
+            
+            // Step 1: Save to server
+            updateMessage.textContent = 'Saving shipment update to server...';
             const response = await fetch(`${API_URL}/${encodeURIComponent(code)}`, { 
                 method: 'PATCH', 
                 headers: { 'Content-Type': 'application/json' }, 
@@ -205,9 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }) 
             });
             const result = await readResponse(response);
-            if (!response.ok) throw new Error(result.message);
+            if (!response.ok) throw new Error(result.message || 'Server failed to update');
 
-            // Trigger immediate EmailJS notification from browser
+            // Step 2: Send EmailJS notification
+            updateMessage.textContent = 'Server updated successfully! Sending email notification...';
+
             try {
                 await sendEmailJsFromBrowser(result, customMessage);
                 updateMessage.textContent = `Successfully updated and email sent to ${result.userEmail}!`;
@@ -215,7 +220,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const errorMsg = emailError?.text || emailError?.message || (typeof emailError === 'object' ? JSON.stringify(emailError) : emailError) || 'Unknown email service error';
                 updateMessage.textContent = `Shipment saved on server, but email notification had an issue: ${errorMsg}`;
             }
+
             await loadShipments();
-        } catch (error) { updateMessage.textContent = error.message; }
+        } catch (error) { 
+            updateMessage.textContent = `Error: ${error.message}`; 
+        }
     });
 });
