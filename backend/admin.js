@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await sendEmailJsFromBrowser(result, customMessage);
                 updateMessage.textContent = `Successfully updated and email sent to ${result.userEmail}!`;
             } catch (emailError) {
-                const errorMsg = emailError?.message || emailError || 'Unknown email service error';
+                const errorMsg = emailError?.text || emailError?.message || (typeof emailError === 'object' ? JSON.stringify(emailError) : emailError) || 'Unknown email service error';
                 updateMessage.textContent = `Shipment saved on server, but email notification had an issue: ${errorMsg}`;
             }
             await loadShipments();
