@@ -60,7 +60,7 @@ const Shipment = mongoose.model('Shipment', shipmentSchema);
 // ==========================
 // Static File Routing
 // ==========================
-app.use(express.static(path.join(__dirname,)));
+app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(express.static(path.join(__dirname, 'backend')));
 app.use('/backend', express.static(path.join(__dirname, 'backend')));
 
