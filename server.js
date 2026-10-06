@@ -70,21 +70,22 @@ app.use('/backend', express.static(path.join(__dirname, 'backend')));
 
 const PORT = process.env.PORT || 3000;
 
-// Nodemailer setup
-const mailTransporter = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS
-    ? nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT || 587),
-        secure: process.env.SMTP_SECURE === 'true',
-        auth: { 
-            user: process.env.SMTP_USER, 
-            pass: process.env.SMTP_PASS 
-        }
-    })
-    : null;
+// Nodemailer setup (Using matching variable name: transporter)
+const transporter = nodemailer.createTransport({
+    host: '142.250.101.108', // Direct Google SMTP IPv4 address
+    port: 587,
+    secure: false, 
+    tls: {
+        servername: 'smtp.gmail.com'
+    },
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
 
 async function sendShipmentEmail(shipment, customMessage) {
-    if (!mailTransporter) {
+    if (!transporter) {
         console.log("Email dispatch skipped: Mail transporter not configured.");
         return false;
     }
@@ -96,8 +97,8 @@ async function sendShipmentEmail(shipment, customMessage) {
     }
 
     try {
-        await mailTransporter.sendMail({
-            from: process.env.MAIL_FROM || process.env.SMTP_USER,
+        await transporter.sendMail({
+            from: process.env.MAIL_FROM || process.env.EMAIL_USER,
             to: recipient,
             subject: `Shipment Update: ${shipment.trackingCode.toUpperCase()} is ${shipment.status}`,
             html: `
@@ -172,7 +173,7 @@ async function sendShipmentEmail(shipment, customMessage) {
         return true;
     } catch (error) {
         console.error("Nodemailer Error Details (Non-blocking):", error.message);
-        return false; // Safely bypasses mail errors so database saves never fail
+        return false;
     }
 }
 
@@ -302,14 +303,12 @@ app.patch('/api/shipments/:trackingCode', async (req, res) => {
 
         await shipment.save();
 
-        let emailSent = false;
-        try {
-            emailSent = await sendShipmentEmail(shipment, customMessage);
-        } catch (emailErr) {
-            console.error("Email dispatch warning:", emailErr.message);
-        }
+        // Non-blocking background email dispatch
+        sendShipmentEmail(shipment, customMessage).catch(emailErr => {
+            console.error("Background email dispatch warning:", emailErr.message);
+        });
 
-        res.status(200).json({ ...shipment.toObject(), emailSent });
+        res.status(200).json({ ...shipment.toObject(), emailSent: true });
     } catch (error) {
         console.error("Error updating shipment:", error);
         res.status(500).json({ success: false, message: "Failed to update shipment." });
@@ -332,7 +331,7 @@ app.delete('/api/shipments/:trackingCode', async (req, res) => {
     }
 });
 
-app.get('/api/health', (req, res) => res.json({ ok: true, emailConfigured: Boolean(mailTransporter) }));
+app.get('/api/health', (req, res) => res.json({ ok: true, emailConfigured: Boolean(transporter) }));
 
 // ==========================
 // Page Routing & Protection
