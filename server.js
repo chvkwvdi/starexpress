@@ -6,6 +6,10 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const cors = require('cors');
 
+// FORCE NODE.JS TO PREFER IPv4 (Fixes Render ENETUNREACH error)
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
+
 const app = express();
 
 // ==========================
