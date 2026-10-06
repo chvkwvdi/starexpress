@@ -79,29 +79,97 @@ const mailTransporter = process.env.SMTP_HOST && process.env.SMTP_USER && proces
     })
     : null;
 
-async function sendShipmentEmail(shipment, message) {
-    if (!mailTransporter || (!shipment.userEmail && !shipment.receiverEmail)) return false;
+async function sendShipmentEmail(shipment, customMessage) {
+    if (!mailTransporter) {
+        console.log("Email dispatch skipped: Mail transporter not configured.");
+        return false;
+    }
+    
     const recipient = shipment.userEmail || shipment.receiverEmail;
-    await mailTransporter.sendMail({
-        from: process.env.MAIL_FROM || process.env.SMTP_USER,
-        to: recipient,
-        subject: `Shipment update: ${shipment.trackingCode} is ${shipment.status}`,
-        html: `
-            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                <h2 style="color: #e63946;">Star Express Shipment Update</h2>
-                <p><strong>Tracking Number:</strong> ${shipment.trackingCode}</p>
-                <p><strong>Current Status:</strong> ${shipment.status}</p>
-                <p><strong>Current Location:</strong> ${shipment.currentLocation || shipment.location}</p>
-                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                <p><strong>Message from Logistics Team:</strong></p>
-                <blockquote style="background: #f9f9f9; padding: 15px; border-left: 4px solid #e63946; margin: 0;">
-                    ${message || 'Your shipment information has been updated.'}
-                </blockquote>
-                <p style="margin-top: 20px; font-size: 0.9em; color: #777;">Thank you for choosing Star Express.</p>
-            </div>
-        `
-    });
-    return true;
+    if (!recipient) {
+        console.log("Email dispatch skipped: No recipient email provided.");
+        return false;
+    }
+
+    try {
+        await mailTransporter.sendMail({
+            from: process.env.MAIL_FROM || process.env.SMTP_USER,
+            to: recipient,
+            subject: `Shipment Update: ${shipment.trackingCode.toUpperCase()} is ${shipment.status}`,
+            html: `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Star Express - Shipment Update</title>
+                <style>
+                    body { margin: 0; padding: 0; background-color: #f4f6f9; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; }
+                    .email-wrapper { width: 100%; background-color: #f4f6f9; padding: 40px 16px; }
+                    .email-container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; }
+                    .header-section { background: linear-gradient(135deg, #090d16 0%, #161e2e 100%); padding: 36px 40px; border-bottom: 4px solid #dc2626; }
+                    .brand-title { font-size: 18px; font-weight: 800; color: #ffffff; }
+                    .brand-subtitle { font-size: 9.5px; font-weight: 700; color: #fca5a5; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 4px; }
+                    .header-headline { font-size: 22px; font-weight: 700; color: #ffffff; margin: 20px 0 0 0; }
+                    .body-content { padding: 40px; }
+                    .tracking-card { background: #f8fafc; border: 1px solid #cbd5e1; border-left: 5px solid #0f172a; border-radius: 12px; padding: 22px 24px; margin-bottom: 28px; }
+                    .tracking-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #64748b; margin-bottom: 6px; }
+                    .tracking-code { font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: 1px; }
+                    .status-module { background-color: #0f172a; border-left: 5px solid #dc2626; border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0; }
+                    .status-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: #94a3b8; font-weight: 700; margin-bottom: 4px; }
+                    .status-value { font-size: 14px; font-weight: 700; color: #ffffff; }
+                    .notes-module { background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #0284c7; border-radius: 0 10px 10px 0; padding: 18px 22px; margin-bottom: 32px; }
+                    .notes-heading { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.9px; color: #0369a1; margin-bottom: 6px; }
+                    .notes-body { font-size: 12.5px; line-height: 1.6; color: #475569; margin: 0; }
+                    .footer-section { background-color: #f8fafc; padding: 32px 40px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 11.5px; color: #64748b; }
+                </style>
+            </head>
+            <body>
+                <div class="email-wrapper">
+                    <div class="email-container">
+                        <div class="header-section">
+                            <div class="brand-title">Star Express</div>
+                            <div class="brand-subtitle">Courier & Logistics</div>
+                            <h1 class="header-headline">Shipment Status Update</h1>
+                        </div>
+                        <div class="body-content">
+                            <p style="font-size: 14px; font-weight: 700; color: #0f172a; margin-top: 0;">Hello ${shipment.receiverName || 'Valued Customer'},</p>
+                            <p style="font-size: 13.5px; line-height: 1.65; color: #475569;">Your shipping manifest has successfully advanced across our global logistics transit pipeline. Review your status milestones below.</p>
+                            
+                            <div class="tracking-card">
+                                <div class="tracking-label">Tracking Reference Number</div>
+                                <div class="tracking-code">${shipment.trackingCode.toUpperCase()}</div>
+                            </div>
+
+                            <p style="font-size: 13px; color: #334155;"><strong>Destination:</strong> ${shipment.destination}</p>
+                            <p style="font-size: 13px; color: #334155;"><strong>Current Location:</strong> ${shipment.currentLocation || shipment.location}</p>
+
+                            <div class="status-module">
+                                <div class="status-title">Active Transit Pipeline Status</div>
+                                <div class="status-value">${shipment.status}</div>
+                            </div>
+
+                            <div class="notes-module">
+                                <div class="notes-heading">Dispatch & Package Information</div>
+                                <p class="notes-body">${customMessage || shipment.notes || 'Your package is proceeding through transit.'}</p>
+                            </div>
+                        </div>
+                        <div class="footer-section">
+                            <strong>STAR EXPRESS COURIER & LOGISTICS</strong><br>
+                            Global Supply Chain Management & Express Freight Networks.
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            `
+        });
+        console.log(`Email successfully dispatched to ${recipient}`);
+        return true;
+    } catch (error) {
+        console.error("Nodemailer Error Details (Non-blocking):", error.message);
+        return false; // Safely bypasses mail errors so database saves never fail
+    }
 }
 
 // ==========================
