@@ -41,12 +41,43 @@ const quoteCalculator = document.getElementById('quoteCalculator');
 const quoteResult = document.getElementById('quoteResult');
 
 function calculateQuote() {
-    const serviceRates = { land: 20.4, air: 60.8, sea: 18.5 };
-    const distanceMultipliers = { local: 1, regional: 21.5, international: 13.5 };
-    const weight = Math.max(Number(document.getElementById('quoteWeight')?.value) || 1, 1);
-    const service = document.getElementById('quoteService')?.value || 'land';
-    const distance = document.getElementById('quoteDistance')?.value || 'local';
-    const estimate = Math.max(18, Math.round(weight * serviceRates[service] * distanceMultipliers[distance] + 12));
+    const weightInput = document.getElementById('quoteWeight')?.value;
+    const weight = Number(weightInput);
+
+    // If weight is empty, zero, or negative, show $0
+    if (!weightInput || isNaN(weight) || weight <= 0) {
+        if (quoteResult) {
+            quoteResult.querySelector('strong').textContent = '$0';
+        }
+        return;
+    }
+
+    const service = document.getElementById('quoteService')?.value || 'air';
+    const distance = document.getElementById('quoteDistance')?.value || 'international';
+
+    let baseFee = 15;
+    let ratePerKg = 20;
+
+    // Distance and Service Tier Matrix
+    if (distance === 'local') {
+        baseFee = 10;
+        if (service === 'land') ratePerKg = 3;
+        else if (service === 'air') ratePerKg = 6;
+        else if (service === 'sea') ratePerKg = 2.5;
+    } else if (distance === 'regional') {
+        baseFee = 25;
+        if (service === 'land') ratePerKg = 8;
+        else if (service === 'air') ratePerKg = 15;
+        else if (service === 'sea') ratePerKg = 6;
+    } else if (distance === 'international') {
+        baseFee = 120;
+        if (service === 'land') ratePerKg = 90;
+        else if (service === 'air') ratePerKg = 135; // 6.5 kg * 135 + 120 = ~$1,005
+        else if (service === 'sea') ratePerKg = 75;
+    }
+
+    const estimate = Math.round(baseFee + (weight * ratePerKg));
+
     if (quoteResult) {
         quoteResult.classList.add('is-updated');
         quoteResult.querySelector('strong').textContent = `$${estimate.toLocaleString()}`;
@@ -64,8 +95,8 @@ quoteCalculator?.querySelectorAll('select, input').forEach(field => {
     field.addEventListener('input', calculateQuote);
 });
 
+// Initialize on load
 calculateQuote();
-
 /* Hero image slider */
 const heroSlides = document.querySelectorAll(".hero-slide");
 const heroDots = document.querySelectorAll(".hero-dot");
